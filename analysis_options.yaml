@@ -1,0 +1,139 @@
+# 🚀 TunnelCast에서 검증된 엔터프라이즈급 Flutter 분석 옵션
+# 모든 Flutter 프로젝트에 글로벌 적용 가능
+# 
+# 사용법:
+# 1. 이 파일을 Flutter 프로젝트 루트에 복사
+# 2. 또는 include: 'path/to/this/file' 사용
+
+include: package:flutter_lints/flutter.yaml
+
+# ═══════════════════════════════════════════════════════════════
+# 🔍 ANALYZER CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+analyzer:
+  # 생성된 파일들 제외
+  exclude:
+    - "**/*.g.dart"           # JSON 직렬화 생성 파일
+    - "**/*.freezed.dart"     # Freezed 생성 파일
+    - "**/*.mocks.dart"       # Mockito 생성 파일
+    - "**/generated_plugin_registrant.dart"
+    - "build/**"
+    - ".dart_tool/**"
+
+  # 오류 심각도 설정
+  errors:
+    # 타입 안전성 강화
+    argument_type_not_assignable: error
+    invalid_assignment: error
+    return_of_invalid_type: error
+    
+    # null 안전성 강화
+    invalid_null_aware_operator: error
+    unnecessary_null_aware_assignments: error
+    
+    # 사용하지 않는 코드 정리
+    unused_import: error
+    unused_local_variable: error
+    dead_code: error
+    
+    # 성능 최적화
+    use_build_context_synchronously: error
+    avoid_web_libraries_in_flutter: error
+    
+    # 코드 스타일 (warning으로 설정)
+    prefer_const_constructors: warning
+    prefer_const_declarations: warning
+    prefer_final_fields: warning
+    prefer_final_locals: warning
+
+  # 언어 설정
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+
+# ═══════════════════════════════════════════════════════════════
+# 🎯 LINTER RULES - 엔터프라이즈급 코드 품질 규칙
+# ═══════════════════════════════════════════════════════════════
+linter:
+  rules:
+    # === 타입 안전성 강화 ===
+    prefer_typing_uninitialized_variables: true
+    always_declare_return_types: true
+    type_annotate_public_apis: true
+    avoid_dynamic_calls: true
+    
+    # === 불변성 강화 ===
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_final_in_for_each: true
+    prefer_final_parameters: true
+    
+    # === 성능 최적화 ===
+    avoid_unnecessary_containers: true
+    sized_box_for_whitespace: true
+    use_key_in_widget_constructors: true
+    avoid_function_literals_in_foreach_calls: true
+    
+    # === 코드 스타일 ===
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    
+    # === 함수 스타일 ===
+    prefer_expression_function_bodies: true
+    # prefer_arrow_function_callbacks: true # 최신 Flutter 린터에서 제거됨
+    
+    # === 네이밍 규칙 ===
+    camel_case_types: true
+    camel_case_extensions: true
+    file_names: true
+    non_constant_identifier_names: true
+    constant_identifier_names: true
+    
+    # === 라이브러리 구조 ===
+    prefer_relative_imports: true
+    directives_ordering: true
+    sort_child_properties_last: true
+    
+    # === 에러 핸들링 ===
+    avoid_catching_errors: true
+    avoid_empty_else: true
+    avoid_print: true
+    
+    # === 문서화 ===
+    public_member_api_docs: false # 프로젝트 규모에 따라 조정
+    
+    # === 보안 ===
+    avoid_web_libraries_in_flutter: true
+    
+    # === 접근성 ===
+    use_build_context_synchronously: true
+    
+    # === 테스트 ===
+    avoid_relative_lib_imports: true
+    
+    # === 기타 품질 규칙 ===
+    avoid_redundant_argument_values: true
+    avoid_returning_null_for_void: true
+    avoid_unused_constructor_parameters: true
+    cancel_subscriptions: true
+    close_sinks: true
+    comment_references: true
+    control_flow_in_finally: true
+    empty_statements: true
+    hash_and_equals: true
+    implementation_imports: true
+    iterable_contains_unrelated_type: true
+    list_remove_unrelated_type: true
+    no_adjacent_strings_in_list: true
+    no_duplicate_case_values: true
+    no_logic_in_create_state: true
+    prefer_void_to_null: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    unnecessary_statements: true
+    unrelated_type_equality_checks: true
+    unsafe_html: true
+    valid_regexps: true 

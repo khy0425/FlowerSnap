@@ -1,0 +1,181 @@
+{
+  "@@locale": "ja",
+  "appTitle": "FloraSnap",
+  "@appTitle": {
+    "description": "アプリケーション タイトル"
+  },
+  "homeTitle": "🌿 FloraSnap",
+  "@homeTitle": {
+    "description": "ホーム画面タイトル"
+  },
+  "takePhoto": "植物を撮る",
+  "@takePhoto": {
+    "description": "植物写真撮影ボタン"
+  },
+  "takePhotoDescription": "気になる植物を撮影してください！\nAIが名前と詳細情報をお教えします。",
+  "@takePhotoDescription": {
+    "description": "植物写真撮影説明"
+  },
+  "camera": "カメラ",
+  "@camera": {
+    "description": "カメラボタン"
+  },
+  "gallery": "ギャラリー",
+  "@gallery": {
+    "description": "ギャラリーボタン"
+  },
+  "todayFlower": "今日の花",
+  "@todayFlower": {
+    "description": "今日の花セクションタイトル"
+  },
+  "myFlowerNote": "私の花ノート",
+  "@myFlowerNote": {
+    "description": "私の花ノートセクションタイトル"
+  },
+  "seeMore": "もっと見る",
+  "@seeMore": {
+    "description": "もっと見るボタン"
+  },
+  "noFlowerTaken": "まだ花を撮影していません",
+  "@noFlowerTaken": {
+    "description": "花を撮影していないメッセージ"
+  },
+  "tryTakePhoto": "上の［花を撮る］ボタンを押してみてください！",
+  "@tryTakePhoto": {
+    "description": "写真撮影を促すメッセージ"
+  },
+  "unknownFlower": "不明な花",
+  "@unknownFlower": {
+    "description": "不明な花の名前"
+  },
+  "confidence": "信頼度: {percentage}%",
+  "@confidence": {
+    "description": "信頼度表示",
+    "placeholders": {
+      "percentage": {
+        "type": "String",
+        "example": "85.5"
+      }
+    }
+  },
+  "noFlowerSaved": "まだ保存された花がありません。\n花を撮影すると自動的にノートに保存されます。",
+  "@noFlowerSaved": {
+    "description": "花が保存されていないメッセージ"
+  },
+  "totalFlowerCount": "合計{count}個の花を記録しました！",
+  "@totalFlowerCount": {
+    "description": "総花数表示",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "welcomeMessage": "🌸 散歩で出会う花の名前を調べましょう",
+  "@welcomeMessage": {
+    "description": "ウェルカムメッセージ"
+  },
+  "welcomeSubMessage": "カメラで撮影するだけで、花の名前と説明をすぐにお教えします",
+  "@welcomeSubMessage": {
+    "description": "ウェルカムサブメッセージ"
+  },
+  "photoError": "写真撮影中にエラーが発生しました: {error}",
+  "@photoError": {
+    "description": "写真エラーメッセージ",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "カメラの権限がありません"
+      }
+    }
+  },
+  "flowerNoteComingSoon": "花ノート画面は近日追加予定です！",
+  "@flowerNoteComingSoon": {
+    "description": "花ノート画面準備中メッセージ"
+  },
+  "settings": "設定",
+  "@settings": {
+    "description": "設定ボタン"
+  },
+  "analysisResult": "分析結果",
+  "@analysisResult": {
+    "description": "分析結果画面タイトル"
+  },
+  "freeAnalysisResult": "無料分析結果",
+  "@freeAnalysisResult": {
+    "description": "無料分析結果セクションタイトル"
+  },
+  "preciseAnalysisAvailable": "精密分析可能",
+  "@preciseAnalysisAvailable": {
+    "description": "精密分析可能通知タイトル"
+  },
+  "preciseAnalysisDescription": "この花をより正確に知りたい場合は、精密分析をお試しください。\n分析権を使用するか、広告を視聴することでご利用いただけます。",
+  "@preciseAnalysisDescription": {
+    "description": "精密分析説明"
+  },
+  "useAnalysisToken": "分析権を使用",
+  "@useAnalysisToken": {
+    "description": "分析権使用ボタン"
+  },
+  "watchAdForToken": "広告を見て分析権を取得",
+  "@watchAdForToken": {
+    "description": "広告視聴ボタン"
+  },
+  "preciseAnalysisResult": "精密分析結果",
+  "@preciseAnalysisResult": {
+    "description": "精密分析結果タイトル"
+  },
+  "saveToFlowerNote": "花ノートに保存",
+  "@saveToFlowerNote": {
+    "description": "花ノート保存ボタン"
+  },
+  "takeAnotherPhoto": "別の花を撮影",
+  "@takeAnotherPhoto": {
+    "description": "別の花を撮影ボタン"
+  },
+  "adNotReady": "広告の準備ができていません。しばらくしてからもう一度お試しください。",
+  "@adNotReady": {
+    "description": "広告準備未完了メッセージ"
+  },
+  "dailyAdLimitReached": "本日の広告視聴回数をすべて使用しました。",
+  "@dailyAdLimitReached": {
+    "description": "日次広告視聴制限メッセージ"
+  },
+  "tokenEarned": "分析権1個を獲得しました！",
+  "@tokenEarned": {
+    "description": "分析権獲得メッセージ"
+  },
+  "noTokenAvailable": "使用可能な分析権がありません。",
+  "@noTokenAvailable": {
+    "description": "分析権なしメッセージ"
+  },
+  "preciseAnalysisCompleted": "精密分析が完了しました！",
+  "@preciseAnalysisCompleted": {
+    "description": "精密分析完了メッセージ"
+  },
+  "analysisError": "分析中にエラーが発生しました：{error}",
+  "@analysisError": {
+    "description": "分析エラーメッセージ",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "ネットワークエラー"
+      }
+    }
+  },
+  "savedToFlowerNote": "花ノートに保存されました！",
+  "@savedToFlowerNote": {
+    "description": "保存完了メッセージ"
+  },
+  "saveError": "保存中にエラーが発生しました：{error}",
+  "@saveError": {
+    "description": "保存エラーメッセージ",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "ディスク容量不足"
+      }
+    }
+  }
+} 

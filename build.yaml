@@ -1,0 +1,13 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        enabled: true
+        generate_for:
+          - lib/data/models/**
+        options:
+          explicit_to_json: true
+          include_if_null: false
+          checked: true
+          create_factory: true
+          create_to_json: true 

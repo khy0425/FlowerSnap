@@ -1,0 +1,181 @@
+{
+  "@@locale": "en",
+  "appTitle": "FloraSnap",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "homeTitle": "🌿 FloraSnap",
+  "@homeTitle": {
+    "description": "Home screen title"
+  },
+  "takePhoto": "Snap Plant",
+  "@takePhoto": {
+    "description": "Take plant photo button"
+  },
+  "takePhotoDescription": "Snap a photo of any plant you're curious about!\nAI will identify it and provide detailed information.",
+  "@takePhotoDescription": {
+    "description": "Take plant photo description"
+  },
+  "camera": "Camera",
+  "@camera": {
+    "description": "Camera button"
+  },
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Gallery button"
+  },
+  "todayFlower": "Today's Flower",
+  "@todayFlower": {
+    "description": "Today's flower section title"
+  },
+  "myFlowerNote": "My Flower Note",
+  "@myFlowerNote": {
+    "description": "My flower note section title"
+  },
+  "seeMore": "See More",
+  "@seeMore": {
+    "description": "See more button"
+  },
+  "noFlowerTaken": "No flowers taken yet",
+  "@noFlowerTaken": {
+    "description": "No flowers taken message"
+  },
+  "tryTakePhoto": "Try tapping the [Take Photo] button above!",
+  "@tryTakePhoto": {
+    "description": "Encourage taking photo message"
+  },
+  "unknownFlower": "Unknown Flower",
+  "@unknownFlower": {
+    "description": "Unknown flower name"
+  },
+  "confidence": "Confidence: {percentage}%",
+  "@confidence": {
+    "description": "Confidence display",
+    "placeholders": {
+      "percentage": {
+        "type": "String",
+        "example": "85.5"
+      }
+    }
+  },
+  "noFlowerSaved": "No flowers saved yet.\nFlowers will be automatically saved to your note when you take photos.",
+  "@noFlowerSaved": {
+    "description": "No flowers saved message"
+  },
+  "totalFlowerCount": "You've recorded {count} flowers in total!",
+  "@totalFlowerCount": {
+    "description": "Total flower count display",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "welcomeMessage": "🌸 Discover the names of flowers you meet during your walks",
+  "@welcomeMessage": {
+    "description": "Welcome message"
+  },
+  "welcomeSubMessage": "Just take a photo with your camera and we'll tell you the flower's name and description right away",
+  "@welcomeSubMessage": {
+    "description": "Welcome sub message"
+  },
+  "photoError": "An error occurred while taking a photo: {error}",
+  "@photoError": {
+    "description": "Photo error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Camera permission denied"
+      }
+    }
+  },
+  "flowerNoteComingSoon": "The flower note screen will be added soon!",
+  "@flowerNoteComingSoon": {
+    "description": "Flower note screen coming soon message"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings button"
+  },
+  "analysisResult": "Analysis Result",
+  "@analysisResult": {
+    "description": "Analysis result screen title"
+  },
+  "freeAnalysisResult": "Free Analysis Result",
+  "@freeAnalysisResult": {
+    "description": "Free analysis result section title"
+  },
+  "preciseAnalysisAvailable": "Precise Analysis Available",
+  "@preciseAnalysisAvailable": {
+    "description": "Precise analysis available notification title"
+  },
+  "preciseAnalysisDescription": "If you want to know this flower more accurately, try precise analysis.\nYou can use analysis tokens or watch ads to use it.",
+  "@preciseAnalysisDescription": {
+    "description": "Precise analysis description"
+  },
+  "useAnalysisToken": "Use Analysis Token",
+  "@useAnalysisToken": {
+    "description": "Use analysis token button"
+  },
+  "watchAdForToken": "Watch Ad for Token",
+  "@watchAdForToken": {
+    "description": "Watch ad button"
+  },
+  "preciseAnalysisResult": "Precise Analysis Result",
+  "@preciseAnalysisResult": {
+    "description": "Precise analysis result title"
+  },
+  "saveToFlowerNote": "Save to Flower Note",
+  "@saveToFlowerNote": {
+    "description": "Save to flower note button"
+  },
+  "takeAnotherPhoto": "Take Another Photo",
+  "@takeAnotherPhoto": {
+    "description": "Take another photo button"
+  },
+  "adNotReady": "Ad is not ready. Please try again later.",
+  "@adNotReady": {
+    "description": "Ad not ready message"
+  },
+  "dailyAdLimitReached": "You've reached today's ad viewing limit.",
+  "@dailyAdLimitReached": {
+    "description": "Daily ad viewing limit message"
+  },
+  "tokenEarned": "You earned 1 analysis token!",
+  "@tokenEarned": {
+    "description": "Token earned message"
+  },
+  "noTokenAvailable": "No analysis tokens available.",
+  "@noTokenAvailable": {
+    "description": "No token available message"
+  },
+  "preciseAnalysisCompleted": "Precise analysis completed!",
+  "@preciseAnalysisCompleted": {
+    "description": "Precise analysis completed message"
+  },
+  "analysisError": "Analysis error occurred: {error}",
+  "@analysisError": {
+    "description": "Analysis error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+  "savedToFlowerNote": "Saved to flower note!",
+  "@savedToFlowerNote": {
+    "description": "Save completed message"
+  },
+  "saveError": "Save error occurred: {error}",
+  "@saveError": {
+    "description": "Save error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Insufficient disk space"
+      }
+    }
+  }
+} 
