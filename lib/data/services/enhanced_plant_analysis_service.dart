@@ -157,7 +157,7 @@ class EnhancedPlantAnalysisService {
     }
     
     // 신뢰도 순으로 정렬
-    validResults.sort((a, b) => b.confidence.compareTo(a.confidence));
+    validResults.sort((final a, final b) => b.confidence.compareTo(a.confidence));
     
     return validResults;
   }
@@ -176,7 +176,9 @@ class EnhancedPlantAnalysisService {
     // 4. 이름의 유효성 검사
     if (result.name.toLowerCase().contains('unknown') || 
         result.name.toLowerCase().contains('불명') ||
-        result.name.length < 3) return false;
+        result.name.length < 3) {
+      return false;
+    }
     
     // 5. 비식물 키워드 엄격 검사
     final String searchText = '${result.name} ${result.scientificName} ${result.description}'.toLowerCase();
@@ -240,14 +242,14 @@ class EnhancedPlantAnalysisService {
       alternativeNames: allAlternativeNames.toList(),
       imageUrl: imageFile.path,
       analyzedAt: DateTime.now(),
-      apiProvider: 'ensemble_${validResults.map((r) => r.apiProvider).join('+')}',
-      isPremiumResult: validResults.any((r) => r.isPremiumResult),
+      apiProvider: 'ensemble_${validResults.map((final r) => r.apiProvider).join('+')}',
+      isPremiumResult: validResults.any((final r) => r.isPremiumResult),
       category: 'plant',
       rarity: _calculateEnsembleRarity(validResults),
       additionalInfo: {
         'ensemble_count': validResults.length,
-        'source_apis': validResults.map((r) => r.apiProvider).toList(),
-        'individual_confidences': validResults.map((r) => r.confidence).toList(),
+        'source_apis': validResults.map((final r) => r.apiProvider).toList(),
+        'individual_confidences': validResults.map((final r) => r.confidence).toList(),
       },
     );
   }
@@ -268,7 +270,7 @@ class EnhancedPlantAnalysisService {
 
   /// 앙상블 희귀도 계산
   int _calculateEnsembleRarity(final List<AnalysisResult> results) {
-    final double averageRarity = results.map((r) => r.rarity).reduce((a, b) => a + b) / results.length;
+    final double averageRarity = results.map((final r) => r.rarity).reduce((final a, final b) => a + b) / results.length;
     return averageRarity.round().clamp(1, 5);
   }
 

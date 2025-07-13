@@ -86,7 +86,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 로딩 상태 설정
-  void _setLoading(bool loading) {
+  void _setLoading(final bool loading) {
     if (mounted) {
       setState(() {
         _isLoading = loading;
@@ -112,10 +112,10 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
                   tokenService: _tokenService,
                   onTokenCountUpdate: _loadTokenCount,
                 ),
-                onSettings: () => Navigator.push(
+                                  onSettings: () => Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (context) => const SettingsScreen(),
+                    builder: (final context) => const SettingsScreen(),
                   ),
                 ),
                 showDeveloperMenu: kDebugMode,
@@ -182,7 +182,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 꽃 노트 섹션
-  Widget _buildFlowerNoteSection(BuildContext context) {
+  Widget _buildFlowerNoteSection(final BuildContext context) {
     final analysisHistory = ref.watch(analysisHistoryProvider);
     
     return Container(
@@ -231,10 +231,10 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
 
   /// 섹션 헤더 위젯
   Widget _buildSectionHeader(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required Color color,
+    final BuildContext context, {
+    required final IconData icon,
+    required final String title,
+    required final Color color,
   }) {
     return Row(
       children: [
@@ -265,7 +265,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 꽃 노트 미리보기
-  Widget _buildFlowerNotePreview(BuildContext context, List<dynamic> history) {
+  Widget _buildFlowerNotePreview(final BuildContext context, final List<dynamic> history) {
     return Container(
       padding: const EdgeInsets.all(SeniorConstants.spacing),
       decoration: BoxDecoration(
@@ -297,7 +297,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 하단 섹션 (프리미엄 안내 + 광고)
-  Widget _buildBottomSection(BuildContext context) {
+  Widget _buildBottomSection(final BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -335,7 +335,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
   
   /// 꽃 노트 전체 화면으로 이동
-  void _showFlowerNoteScreen(BuildContext context) {
+  void _showFlowerNoteScreen(final BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(AppLocalizations.of(context).flowerNoteComingSoon),
@@ -345,7 +345,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 리워드 광고로 토큰 획득 (테스트 모드)
-  Future<void> _showRewardAdForToken(BuildContext context) async {
+  Future<void> _showRewardAdForToken(final BuildContext context) async {
     if (kDebugMode) {
       PremiumWidgets.showTestTokenDialog(
         context,

@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
-import 'dart:io';
 
 /// 리워드 광고 관리 서비스
 /// Google Mobile Ads를 활용하여 리워드 광고 표시 및 보상 처리
@@ -33,13 +34,13 @@ class RewardAdService {
         adUnitId: _adUnitId,
         request: const AdRequest(),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (RewardedAd ad) {
+          onAdLoaded: (final RewardedAd ad) {
             _logger.i('리워드 광고 로드 완료');
             _rewardedAd = ad;
             _isAdLoaded = true;
             _setAdCallbacks();
           },
-          onAdFailedToLoad: (LoadAdError error) {
+          onAdFailedToLoad: (final LoadAdError error) {
             _logger.e('리워드 광고 로드 실패: $error');
             _isAdLoaded = false;
             _rewardedAd = null;

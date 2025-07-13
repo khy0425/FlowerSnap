@@ -6,10 +6,10 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flora_snap/app.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   testWidgets('App starts correctly smoke test', (

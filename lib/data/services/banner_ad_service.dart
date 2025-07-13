@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
-import 'dart:io';
 
 /// 배너 광고 관리 서비스
 /// 무료 버전에서 지속적인 수익 창출을 위한 배너 광고 표시
@@ -40,23 +41,23 @@ class BannerAdService {
         size: adSize,
         request: const AdRequest(),
         listener: BannerAdListener(
-          onAdLoaded: (Ad ad) {
+          onAdLoaded: (final Ad ad) {
             _logger.i('💡 배너 광고 로드 완료');
             _isAdLoaded = true;
             onAdLoaded?.call(ad);
           },
-          onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          onAdFailedToLoad: (final Ad ad, final LoadAdError error) {
             _logger.e('배너 광고 로드 실패: $error');
             _isAdLoaded = false;
             ad.dispose();
             _bannerAd = null;
             onAdFailedToLoad?.call(ad, error);
           },
-          onAdClicked: (Ad ad) {
+          onAdClicked: (final Ad ad) {
             _logger.i('배너 광고 클릭됨');
             onAdClicked?.call(ad);
           },
-          onAdImpression: (Ad ad) {
+          onAdImpression: (final Ad ad) {
             _logger.i('배너 광고 노출됨');
           },
         ),

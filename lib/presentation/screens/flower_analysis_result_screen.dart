@@ -201,7 +201,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             
             Expanded(
               child: Text(
-                AppLocalizations.of(context)!.analysisResult,
+                AppLocalizations.of(context).analysisResult,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -426,7 +426,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.freeAnalysisResult,
+                        AppLocalizations.of(context).freeAnalysisResult,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           color: SeniorTheme.accentColor,
                           fontWeight: FontWeight.bold,
@@ -448,7 +448,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             
             // 식물 이름
             Text(
-              result.name.isNotEmpty ? result.name : AppLocalizations.of(context)!.unknownFlower,
+              result.name.isNotEmpty ? result.name : AppLocalizations.of(context).unknownFlower,
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: SeniorTheme.primaryColor,
@@ -722,7 +722,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                   ),
                 ),
                 Text(
-                  AppLocalizations.of(context)!.confidence((confidence * 100).toStringAsFixed(1)),
+                  AppLocalizations.of(context).confidence((confidence * 100).toStringAsFixed(1)),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: color,
                     fontWeight: FontWeight.bold,
@@ -766,7 +766,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.preciseAnalysisAvailable,
+                        AppLocalizations.of(context).preciseAnalysisAvailable,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           color: SeniorTheme.warningColor,
                           fontWeight: FontWeight.bold,
@@ -787,7 +787,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             const SizedBox(height: SeniorConstants.spacingLarge),
             
             Text(
-              AppLocalizations.of(context)!.preciseAnalysisDescription,
+              AppLocalizations.of(context).preciseAnalysisDescription,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             
@@ -815,7 +815,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             child: ElevatedButton.icon(
               onPressed: () => _performPreciseAnalysis(useToken: true),
               icon: const Icon(Icons.stars),
-              label: Text(AppLocalizations.of(context)!.useAnalysisToken),
+                              label: Text(AppLocalizations.of(context).useAnalysisToken),
               style: ElevatedButton.styleFrom(
                 backgroundColor: SeniorTheme.primaryColor,
                 foregroundColor: Colors.white,
@@ -842,7 +842,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                   ),
                 )
               : const Icon(Icons.play_circle_outline),
-            label: Text(AppLocalizations.of(context)!.watchAdForToken),
+                            label: Text(AppLocalizations.of(context).watchAdForToken),
             style: ElevatedButton.styleFrom(
               backgroundColor: SeniorTheme.successColor,
               foregroundColor: Colors.white,
@@ -886,7 +886,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.preciseAnalysisResult,
+                        AppLocalizations.of(context).preciseAnalysisResult,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           color: SeniorTheme.successColor,
                           fontWeight: FontWeight.bold,
@@ -908,7 +908,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             
             // 정밀 분석 결과 표시
             Text(
-              _preciseResult!.name.isNotEmpty ? _preciseResult!.name : AppLocalizations.of(context)!.unknownFlower,
+              _preciseResult!.name.isNotEmpty ? _preciseResult!.name : AppLocalizations.of(context).unknownFlower,
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: SeniorTheme.successColor,
@@ -996,7 +996,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
           child: ElevatedButton.icon(
             onPressed: () => _saveToFlowerNote(context),
             icon: const Icon(Icons.save),
-            label: Text(AppLocalizations.of(context)!.saveToFlowerNote),
+                            label: Text(AppLocalizations.of(context).saveToFlowerNote),
             style: ElevatedButton.styleFrom(
               backgroundColor: SeniorTheme.primaryColor,
               foregroundColor: Colors.white,
@@ -1013,7 +1013,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
           child: OutlinedButton.icon(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.camera_alt),
-            label: Text(AppLocalizations.of(context)!.takeAnotherPhoto),
+                            label: Text(AppLocalizations.of(context).takeAnotherPhoto),
             style: OutlinedButton.styleFrom(
               foregroundColor: SeniorTheme.primaryColor,
               side: const BorderSide(color: SeniorTheme.primaryColor, width: 2),
