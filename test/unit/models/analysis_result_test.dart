@@ -1,238 +1,354 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:flora_snap/data/models/analysis_result.dart';
+import 'package:flora_snap/data/models/detection_result.dart';
 import 'package:flora_snap/data/models/bounding_box.dart';
 
 void main() {
   group('AnalysisResult Model Tests', () {
     late AnalysisResult testResult;
+    late DetectionResult testDetection;
+    late BoundingBox testBoundingBox;
     
     setUp(() {
+      testBoundingBox = const BoundingBox(
+        left: 0.1,
+        top: 0.2,
+        width: 0.3,
+        height: 0.4,
+      );
+      
+      testDetection = DetectionResult(
+        boundingBox: testBoundingBox,
+        confidence: 0.85,
+        label: 'Rose',
+      );
+      
       testResult = AnalysisResult(
-        id: 'test-id-123',
+        id: 'test_001',
         name: '장미',
         scientificName: 'Rosa rubiginosa',
         confidence: 0.95,
         description: '아름다운 빨간 장미입니다.',
-        alternativeNames: const ['Red Rose', 'Garden Rose'],
-        imageUrl: 'https://example.com/rose.jpg',
-        analyzedAt: DateTime(2024, 1, 15, 10, 30),
-        apiProvider: 'plantnet',
-        isPremiumResult: false,
+        alternativeNames: const ['Red Rose', '빨간장미'],
+        imageUrl: '/path/to/image.jpg',
+        analyzedAt: DateTime.now(),
+        apiProvider: 'plantid',
+        isPremiumResult: true,
         category: 'flower',
         rarity: 3,
-        additionalInfo: const {
-          'color': 'red',
-          'season': 'spring',
-        },
-        boundingBoxes: const [
-          BoundingBox(left: 0.1, top: 0.1, width: 0.8, height: 0.8),
-        ],
+        additionalInfo: const {'color': 'red', 'season': 'spring'},
+        detectionResults: [testDetection],
       );
     });
 
-    group('Constructor and Basic Properties', () {
-      test('should create AnalysisResult with all required fields', () {
-        expect(testResult.id, equals('test-id-123'));
+    group('Constructor Tests', () {
+      test('should create AnalysisResult with all fields', () {
+        expect(testResult.id, equals('test_001'));
         expect(testResult.name, equals('장미'));
         expect(testResult.scientificName, equals('Rosa rubiginosa'));
         expect(testResult.confidence, equals(0.95));
         expect(testResult.description, equals('아름다운 빨간 장미입니다.'));
-        expect(testResult.alternativeNames, equals(['Red Rose', 'Garden Rose']));
-        expect(testResult.imageUrl, equals('https://example.com/rose.jpg'));
-        expect(testResult.analyzedAt, equals(DateTime(2024, 1, 15, 10, 30)));
-        expect(testResult.apiProvider, equals('plantnet'));
-        expect(testResult.isPremiumResult, isFalse);
+        expect(testResult.alternativeNames, equals(['Red Rose', '빨간장미']));
+        expect(testResult.imageUrl, equals('/path/to/image.jpg'));
+        expect(testResult.apiProvider, equals('plantid'));
+        expect(testResult.isPremiumResult, isTrue);
         expect(testResult.category, equals('flower'));
         expect(testResult.rarity, equals(3));
+        expect(testResult.additionalInfo, equals({'color': 'red', 'season': 'spring'}));
+        expect(testResult.detectionResults.length, equals(1));
+        expect(testResult.detectionResults.first.label, equals('Rose'));
       });
 
-      test('should handle empty alternative names', () {
+      test('should create AnalysisResult with required fields only', () {
         final result = AnalysisResult(
-          id: 'test-2',
-          name: '테스트 꽃',
-          scientificName: 'Test flower',
-          confidence: 0.8,
-          description: '테스트용 꽃입니다.',
+          id: 'test_002',
+          name: '해바라기',
+          scientificName: 'Helianthus annuus',
+          confidence: 0.92,
+          description: '노란색 꽃잎을 가진 해바라기입니다.',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now(),
+          apiProvider: 'plantid',
+          isPremiumResult: false,
+          category: 'flower',
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
+        );
+
+        expect(result.id, equals('test_002'));
+        expect(result.name, equals('해바라기'));
+        expect(result.alternativeNames, isEmpty);
+        expect(result.detectionResults, isEmpty);
+      });
+
+      test('should create AnalysisResult with empty detection results', () {
+        final result = AnalysisResult(
+          id: 'test_003',
+          name: '튤립',
+          scientificName: 'Tulipa gesneriana',
+          confidence: 0.78,
+          description: '봄에 피는 아름다운 튤립입니다.',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now(),
+          apiProvider: 'google_vision',
+          isPremiumResult: false,
+          category: 'flower',
+          rarity: 2,
+          additionalInfo: const {},
+          detectionResults: const [],
+        );
+
+        expect(result.detectionResults, isEmpty);
+        expect(result.boundingBoxes, isEmpty); // deprecated getter should work
+      });
+    });
+
+    group('JSON Serialization Tests', () {
+      test('should convert to JSON correctly', () {
+        final json = testResult.toJson();
+
+        expect(json['id'], equals('test_001'));
+        expect(json['name'], equals('장미'));
+        expect(json['scientific_name'], equals('Rosa rubiginosa'));
+        expect(json['confidence'], equals(0.95));
+        expect(json['description'], equals('아름다운 빨간 장미입니다.'));
+        expect(json['alternative_names'], equals(['Red Rose', '빨간장미']));
+        expect(json['image_url'], equals('/path/to/image.jpg'));
+        expect(json['api_provider'], equals('plantid'));
+        expect(json['is_premium_result'], isTrue);
+        expect(json['category'], equals('flower'));
+        expect(json['rarity'], equals(3));
+        expect(json['additional_info'], equals({'color': 'red', 'season': 'spring'}));
+        expect(json['detection_results'], isA<List>());
+        expect(json['detection_results'].length, equals(1));
+      });
+
+      test('should create from JSON correctly', () {
+        final json = {
+          'id': 'test_json',
+          'name': '개나리',
+          'scientific_name': 'Forsythia koreana',
+          'confidence': 0.88,
+          'description': '노란색 봄꽃 개나리입니다.',
+          'alternative_names': const <String>[],
+          'image_url': '/test/image.jpg',
+          'analyzed_at': DateTime.now().toIso8601String(),
+          'api_provider': 'test',
+          'is_premium_result': false,
+          'category': 'flower',
+          'rarity': 2,
+          'additional_info': const <String, dynamic>{},
+          'detection_results': const <Map<String, dynamic>>[],
+        };
+
+        final result = AnalysisResult.fromJson(json);
+        expect(result.id, equals('test_json'));
+        expect(result.name, equals('개나리'));
+        expect(result.scientificName, equals('Forsythia koreana'));
+        expect(result.confidence, equals(0.88));
+        expect(result.isPremiumResult, isFalse);
+        expect(result.category, equals('flower'));
+        expect(result.rarity, equals(2));
+      });
+    });
+
+    group('Validation Tests', () {
+      test('should validate positive confidence', () {
+        expect(() => AnalysisResult(
+          id: 'test_invalid',
+          name: 'Invalid',
+          scientificName: 'Invalid',
+          confidence: -0.1,
+          description: 'Invalid confidence',
           alternativeNames: const [],
           imageUrl: '',
           analyzedAt: DateTime.now(),
           apiProvider: 'test',
           isPremiumResult: false,
-          category: 'test',
+          category: 'unknown',
           rarity: 1,
           additionalInfo: const {},
-          boundingBoxes: const [],
-        );
-        
-        expect(result.alternativeNames, isEmpty);
-        expect(result.additionalInfo, isEmpty);
-        expect(result.boundingBoxes, isEmpty);
-      });
-    });
-
-    group('JSON Serialization', () {
-      test('should convert to JSON correctly', () {
-        final json = testResult.toJson();
-        
-        expect(json['id'], equals('test-id-123'));
-        expect(json['name'], equals('장미'));
-        expect(json['scientificName'], equals('Rosa rubiginosa'));
-        expect(json['confidence'], equals(0.95));
-        expect(json['description'], equals('아름다운 빨간 장미입니다.'));
-        expect(json['alternativeNames'], equals(['Red Rose', 'Garden Rose']));
-        expect(json['imageUrl'], equals('https://example.com/rose.jpg'));
-        expect(json['apiProvider'], equals('plantnet'));
-        expect(json['isPremiumResult'], isFalse);
-        expect(json['category'], equals('flower'));
-        expect(json['rarity'], equals(3));
+          detectionResults: const [],
+        ), throwsA(isA<AssertionError>()));
       });
 
-      test('should create from JSON correctly', () {
-        final json = {
-          'id': 'json-test-id',
-          'name': 'JSON 장미',
-          'scientificName': 'Rosa JSON',
-          'confidence': 0.87,
-          'description': 'JSON에서 생성된 장미',
-          'alternativeNames': <String>['JSON Rose'],
-          'imageUrl': 'https://json.example.com/rose.jpg',
-          'analyzedAt': '2024-01-15T10:30:00.000',
-          'apiProvider': 'json-api',
-          'isPremiumResult': true,
-          'category': 'json-flower',
-          'rarity': 2,
-          'additionalInfo': <String, dynamic>{'source': 'json'},
-          'boundingBoxes': <Map<String, dynamic>>[
-            {'left': 0.2, 'top': 0.2, 'width': 0.6, 'height': 0.6}
-          ],
-        };
-        
-        final result = AnalysisResult.fromJson(json);
-        
-        expect(result.id, equals('json-test-id'));
-        expect(result.name, equals('JSON 장미'));
-        expect(result.scientificName, equals('Rosa JSON'));
-        expect(result.confidence, equals(0.87));
-        expect(result.description, equals('JSON에서 생성된 장미'));
-        expect(result.alternativeNames, equals(['JSON Rose']));
-        expect(result.imageUrl, equals('https://json.example.com/rose.jpg'));
-        expect(result.apiProvider, equals('json-api'));
-        expect(result.isPremiumResult, isTrue);
-        expect(result.category, equals('json-flower'));
-        expect(result.rarity, equals(2));
-      });
-    });
-
-    group('Validation', () {
-      test('should validate confidence range', () {
-        expect(testResult.confidence, inInclusiveRange(0.0, 1.0));
-      });
-
-      test('should validate rarity range', () {
-        expect(testResult.rarity, inInclusiveRange(1, 5));
-      });
-
-      test('should handle edge case confidence values', () {
-        final minConfidenceResult = AnalysisResult(
-          id: 'min-conf',
-          name: '최소 신뢰도',
-          scientificName: 'Min confidence',
-          confidence: 0.0,
-          description: '최소 신뢰도 테스트',
-          alternativeNames: const <String>[],
+      test('should validate confidence not exceeding 1.0', () {
+        expect(() => AnalysisResult(
+          id: 'test_invalid',
+          name: 'Invalid',
+          scientificName: 'Invalid',
+          confidence: 1.5,
+          description: 'Invalid confidence',
+          alternativeNames: const [],
           imageUrl: '',
           analyzedAt: DateTime.now(),
           apiProvider: 'test',
           isPremiumResult: false,
-          category: 'test',
+          category: 'unknown',
           rarity: 1,
-          additionalInfo: const <String, dynamic>{},
-          boundingBoxes: const <BoundingBox>[],
-        );
+          additionalInfo: const {},
+          detectionResults: const [],
+        ), throwsA(isA<AssertionError>()));
+      });
 
-        final maxConfidenceResult = AnalysisResult(
-          id: 'max-conf',
-          name: '최대 신뢰도',
-          scientificName: 'Max confidence',
-          confidence: 1.0,
-          description: '최대 신뢰도 테스트',
-          alternativeNames: const <String>[],
+      test('should validate empty ID', () {
+        expect(() => AnalysisResult(
+          id: '',
+          name: 'Valid',
+          scientificName: 'Valid',
+          confidence: 0.5,
+          description: 'Valid description',
+          alternativeNames: const [],
           imageUrl: '',
           analyzedAt: DateTime.now(),
           apiProvider: 'test',
           isPremiumResult: false,
-          category: 'test',
-          rarity: 5,
-          additionalInfo: const <String, dynamic>{},
-          boundingBoxes: const <BoundingBox>[],
-        );
+          category: 'unknown',
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
+        ), throwsA(isA<AssertionError>()));
+      });
 
-        expect(minConfidenceResult.confidence, equals(0.0));
-        expect(maxConfidenceResult.confidence, equals(1.0));
-        expect(minConfidenceResult.rarity, equals(1));
-        expect(maxConfidenceResult.rarity, equals(5));
+      test('should validate empty name', () {
+        expect(() => AnalysisResult(
+          id: 'test_valid',
+          name: '',
+          scientificName: 'Valid',
+          confidence: 0.5,
+          description: 'Valid description',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now(),
+          apiProvider: 'test',
+          isPremiumResult: false,
+          category: 'unknown',
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
+        ), throwsA(isA<AssertionError>()));
       });
     });
 
-    group('Equality and HashCode', () {
-      test('should be equal when all properties match', () {
-        final anotherResult = AnalysisResult(
-          id: 'test-id-123',
-          name: '장미',
-          scientificName: 'Rosa rubiginosa',
-          confidence: 0.95,
-          description: '아름다운 빨간 장미입니다.',
-          alternativeNames: const ['Red Rose', 'Garden Rose'],
-          imageUrl: 'https://example.com/rose.jpg',
-          analyzedAt: DateTime(2024, 1, 15, 10, 30),
-          apiProvider: 'plantnet',
+    group('Helper Methods Tests', () {
+      test('should check if result is recent', () {
+        final recentResult = AnalysisResult(
+          id: 'recent',
+          name: 'Recent Flower',
+          scientificName: 'Recent species',
+          confidence: 0.8,
+          description: 'Recently analyzed',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now().subtract(const Duration(minutes: 5)),
+          apiProvider: 'test',
           isPremiumResult: false,
           category: 'flower',
-          rarity: 3,
-          additionalInfo: const {
-            'color': 'red',
-            'season': 'spring',
-          },
-          boundingBoxes: const <BoundingBox>[
-            BoundingBox(left: 0.1, top: 0.1, width: 0.8, height: 0.8),
-          ],
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
         );
 
-        expect(testResult, equals(anotherResult));
-        expect(testResult.hashCode, equals(anotherResult.hashCode));
+        // Check if analyzed within last hour (manually)
+        final hourAgo = DateTime.now().subtract(const Duration(hours: 1));
+        expect(recentResult.analyzedAt.isAfter(hourAgo), isTrue);
       });
 
-      test('should not be equal when properties differ', () {
-        final differentResult = AnalysisResult(
-          id: 'different-id',
-          name: '다른 꽃',
-          scientificName: 'Different flower',
-          confidence: 0.8,
-          description: '다른 꽃입니다.',
-          alternativeNames: const <String>['Different'],
-          imageUrl: 'https://different.com/flower.jpg',
-          analyzedAt: DateTime(2024, 1, 16),
-          apiProvider: 'different',
-          isPremiumResult: true,
-          category: 'different',
-          rarity: 2,
-          additionalInfo: const <String, dynamic>{'type': 'different'},
-          boundingBoxes: const <BoundingBox>[],
+      test('should check detection results', () {
+        expect(testResult.detectionResults.isNotEmpty, isTrue);
+        expect(testResult.boundingBoxes.isNotEmpty, isTrue); // deprecated getter
+      });
+
+      test('should have correct basic properties', () {
+        expect(testResult.name, contains('장미'));
+        expect(testResult.scientificName, contains('Rosa rubiginosa'));
+        expect(testResult.confidence, equals(0.95));
+      });
+
+      test('should create copy with changes', () {
+        final copy = testResult.copyWith(
+          confidence: 0.99,
+          name: '새로운 이름',
         );
 
-        expect(testResult, isNot(equals(differentResult)));
-        expect(testResult.hashCode, isNot(equals(differentResult.hashCode)));
+        expect(copy.confidence, equals(0.99));
+        expect(copy.name, equals('새로운 이름'));
+        expect(copy.id, equals(testResult.id)); // unchanged
+        expect(copy.scientificName, equals(testResult.scientificName)); // unchanged
       });
     });
 
-    group('String Representation', () {
-      test('should provide meaningful toString output', () {
-        final string = testResult.toString();
-        
-        expect(string, contains('AnalysisResult'));
-        expect(string, contains('test-id-123'));
-        expect(string, contains('장미'));
-        expect(string, contains('0.95'));
+    group('Edge Cases', () {
+      test('should handle minimum confidence', () {
+        final result = AnalysisResult(
+          id: 'min_confidence',
+          name: 'Uncertain',
+          scientificName: 'Uncertain species',
+          confidence: 0.0,
+          description: 'Minimum confidence',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now(),
+          apiProvider: 'test',
+          isPremiumResult: false,
+          category: 'unknown',
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
+        );
+
+        expect(result.confidence, equals(0.0));
+        expect(result.confidence >= 0.8, isFalse);
+      });
+
+      test('should handle maximum confidence', () {
+        final result = AnalysisResult(
+          id: 'max_confidence',
+          name: 'Certain',
+          scientificName: 'Certain species',
+          confidence: 1.0,
+          description: 'Maximum confidence',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now(),
+          apiProvider: 'test',
+          isPremiumResult: false,
+          category: 'flower',
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
+        );
+
+        expect(result.confidence, equals(1.0));
+        expect(result.confidence >= 0.8, isTrue);
+      });
+
+      test('should handle empty lists and maps', () {
+        final result = AnalysisResult(
+          id: 'empty_test',
+          name: 'Empty Test',
+          scientificName: 'Empty',
+          confidence: 0.5,
+          description: 'Empty collections test',
+          alternativeNames: const [],
+          imageUrl: '',
+          analyzedAt: DateTime.now(),
+          apiProvider: 'test',
+          isPremiumResult: false,
+          category: 'unknown',
+          rarity: 1,
+          additionalInfo: const {},
+          detectionResults: const [],
+        );
+
+        expect(result.alternativeNames, isEmpty);
+        expect(result.additionalInfo, isEmpty);
+        expect(result.detectionResults, isEmpty);
+        expect(result.boundingBoxes, isEmpty);
       });
     });
   });

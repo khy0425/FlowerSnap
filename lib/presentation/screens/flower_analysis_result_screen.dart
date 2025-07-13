@@ -277,7 +277,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusSmall),
                   ),
                   child: Icon(
-                    result.boundingBoxes.isNotEmpty 
+                    result.detectionResults.isNotEmpty 
                         ? Icons.center_focus_strong 
                         : Icons.photo_camera,
                     color: SeniorTheme.accentColor,
@@ -290,7 +290,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        result.boundingBoxes.isNotEmpty 
+                        result.detectionResults.isNotEmpty 
                             ? "분석 완료 (식물 위치 표시)"
                             : "분석 완료",
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -298,11 +298,11 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                           color: SeniorTheme.textPrimaryColor,
                         ),
                       ),
-                      // Bounding box 정보 (단순화된 버전)
-                      if (result.boundingBoxes.isNotEmpty) ...[
+                      // Detection results 정보 (단순화된 버전)
+                      if (result.detectionResults.isNotEmpty) ...[
                         const SizedBox(height: SeniorConstants.spacingSmall),
                         Text(
-                          '감지 영역: ${result.boundingBoxes.length}개',
+                          '감지 영역: ${result.detectionResults.length}개',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: SeniorTheme.textSecondaryColor,
                           ),
@@ -320,15 +320,15 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             Center(
               child: ImageWithBoundingBox(
                 imageFile: widget.imageFile,
-                boundingBoxes: result.boundingBoxes,
+                detectionResults: result.detectionResults,
                 width: double.infinity,
                 height: 300,
                 fit: BoxFit.cover,
               ),
             ),
             
-            // 바운딩 박스 정보 표시
-            if (result.boundingBoxes.isNotEmpty) ...[
+            // 감지 결과 정보 표시
+            if (result.detectionResults.isNotEmpty) ...[
               const SizedBox(height: SeniorConstants.spacing),
               Container(
                 padding: const EdgeInsets.all(SeniorConstants.spacing),
@@ -1125,7 +1125,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
 
   /// 리워드 광고 시청
   Future<void> _watchRewardAd() async {
-    if (!_rewardAdService.isAdLoaded()) {
+    if (!_rewardAdService.isAdLoaded) {
       if (mounted) {
         final localizations = AppLocalizations.of(context);
         _showSnackBar(localizations.adNotReady, isError: true);
@@ -1144,23 +1144,22 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
     }
     
     if (!mounted) return;
-    final localizations = AppLocalizations.of(context);
     
     await _rewardAdService.showRewardAd(
       onUserEarnedReward: (final ad, final reward) {
-        _logger.i('리워드 광고 시청 완료: ${reward.amount} ${reward.type}');
+        debugPrint('리워드 광고 시청 완료: ${reward.amount} ${reward.type}');
         _tokenService.addToken();
         // incrementTodayRewardAdCount 메서드 제거 (존재하지 않음)
-        onTokenCountUpdate();
+        // onTokenCountUpdate 메서드는 없으므로 제거
         Navigator.of(context).pop();
-      },
-      onAdClosed: () {
-        _logger.i('리워드 광고 닫힘');
-      },
-      onAdFailed: (final String error) {
-        _logger.e('리워드 광고 실패: $error');
-        _showSnackBar(context, error, isError: true);
-      },
+              },
+        onAdClosed: () {
+          debugPrint('리워드 광고 닫힘');
+        },
+        onAdFailed: (final String error) {
+          debugPrint('리워드 광고 실패: $error');
+          _showSnackBar(error, isError: true);
+        },
     );
   }
   

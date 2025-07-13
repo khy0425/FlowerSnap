@@ -59,4 +59,22 @@ class AnalysisTokenService {
       _logger.i('💎 토큰 ${-delta}개 차감됨. 현재: $newCount개');
     }
   }
+
+  /// 토큰 개수 직접 설정 (공개 메서드)
+  Future<void> setTokenCount(final int count) async {
+    await _setTokenCount(count);
+    _logger.i('💎 토큰 개수 수동 설정: $count개');
+  }
+
+  /// 토큰 초기화 (모든 토큰 제거)
+  Future<void> resetTokens() async {
+    await _setTokenCount(0);
+    _logger.i('💎 모든 토큰이 초기화되었습니다');
+  }
+
+  /// 토큰 보유 여부 확인
+  Future<bool> hasToken() async {
+    final count = await getTokenCount();
+    return count > 0;
+  }
 } 

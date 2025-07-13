@@ -91,7 +91,7 @@ class EnhancedPlantAnalysisService {
         category: 'flower',
         rarity: 4,
         additionalInfo: const {'source': 'plantid', 'method': 'deep_learning'},
-        boundingBoxes: const [],
+        detectionResults: const [],
       );
     } catch (e) {
       _logger.w('PlantId API 호출 실패: $e');
@@ -118,7 +118,7 @@ class EnhancedPlantAnalysisService {
         category: 'flower',
         rarity: 5,
         additionalInfo: const {'source': 'google_vision', 'method': 'label_detection'},
-        boundingBoxes: const [],
+        detectionResults: const [],
       );
     } catch (e) {
       _logger.w('Google Vision API 호출 실패: $e');

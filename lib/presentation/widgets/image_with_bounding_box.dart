@@ -1,8 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/senior_theme.dart';
-import '../../data/models/bounding_box.dart';
 import '../../data/models/detection_result.dart';
 
 /// 이미지 위에 바운딩 박스를 그리는 위젯
@@ -23,8 +23,7 @@ class ImageWithBoundingBox extends StatelessWidget {
   });
 
   @override
-  Widget build(final BuildContext context) {
-    return ClipRRect(
+  Widget build(final BuildContext context) => ClipRRect(
       borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
       child: Stack(
         children: [
@@ -37,44 +36,44 @@ class ImageWithBoundingBox extends StatelessWidget {
           ),
           
           // 바운딩 박스 오버레이
-          if (boundingBoxes.isNotEmpty)
+          if (detectionResults.isNotEmpty)
             Positioned.fill(
               child: CustomPaint(
                 painter: BoundingBoxPainter(
-                  boundingBoxes: boundingBoxes,
+                  detectionResults: detectionResults,
                 ),
               ),
             ),
         ],
       ),
     );
-  }
 }
 
 /// 바운딩 박스를 그리는 CustomPainter
 class BoundingBoxPainter extends CustomPainter {
-  final List<BoundingBox> boundingBoxes;
+  final List<DetectionResult> detectionResults;
 
   BoundingBoxPainter({
-    required this.boundingBoxes,
+    required this.detectionResults,
   });
 
   @override
   void paint(final Canvas canvas, final Size size) {
-    for (final box in boundingBoxes) {
+    for (final detection in detectionResults) {
+      final box = detection.boundingBox;
       if (!box.isValid) continue;
 
       // 바운딩 박스 좌표 계산 (비율로 이미지 크기에 맞춤)
-      final left = box.x * size.width;
-      final top = box.y * size.height;
-      final right = (box.x + box.width) * size.width;
-      final bottom = (box.y + box.height) * size.height;
+      final left = box.left * size.width;
+      final top = box.top * size.height;
+      final right = (box.left + box.width) * size.width;
+      final bottom = (box.top + box.height) * size.height;
 
       final rect = Rect.fromLTRB(left, top, right, bottom);
 
       // 바운딩 박스 색상 설정
       final paint = Paint()
-        ..color = _getBoxColor(box.confidence)
+        ..color = _getBoxColor(detection.confidence)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3.0;
 
@@ -82,7 +81,7 @@ class BoundingBoxPainter extends CustomPainter {
       canvas.drawRect(rect, paint);
 
       // 라벨과 신뢰도 텍스트 배경
-      final labelText = '${box.label} ${(box.confidence * 100).toInt()}%';
+      final labelText = '${detection.label} ${(detection.confidence * 100).toInt()}%';
       final textPainter = TextPainter(
         text: TextSpan(
           text: labelText,
@@ -90,174 +89,151 @@ class BoundingBoxPainter extends CustomPainter {
             color: Colors.white,
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                offset: Offset(1, 1),
-                blurRadius: 2,
-                color: Colors.black54,
-              ),
-            ],
           ),
         ),
         textDirection: TextDirection.ltr,
       );
-
+      
       textPainter.layout();
 
+      // 텍스트 배경 위치 계산
+      final textX = left;
+      final textY = top - textPainter.height - 5;
+      
       // 텍스트 배경 그리기
-      final textBackground = Rect.fromLTWH(
-        left,
-        top - textPainter.height - 8,
+      final backgroundRect = Rect.fromLTWH(
+        textX,
+        textY,
         textPainter.width + 8,
         textPainter.height + 4,
       );
-
+      
       final backgroundPaint = Paint()
-        ..color = _getBoxColor(box.confidence).withValues(alpha: 0.8);
-
-      canvas.drawRect(textBackground, backgroundPaint);
-
+        ..color = _getBoxColor(detection.confidence).withValues(alpha: 0.8);
+      
+      canvas.drawRect(backgroundRect, backgroundPaint);
+      
       // 텍스트 그리기
-      textPainter.paint(
-        canvas,
-        Offset(left + 4, top - textPainter.height - 6),
-      );
+      textPainter.paint(canvas, Offset(textX + 4, textY + 2));
     }
   }
+
+  @override
+  bool shouldRepaint(final BoundingBoxPainter oldDelegate) => detectionResults != oldDelegate.detectionResults;
 
   /// 신뢰도에 따른 바운딩 박스 색상 결정
   Color _getBoxColor(final double confidence) {
     if (confidence >= 0.8) {
-      return SeniorTheme.successColor; // 높은 신뢰도 - 녹색
+      return Colors.green;
     } else if (confidence >= 0.6) {
-      return SeniorTheme.warningColor; // 중간 신뢰도 - 오렌지
+      return Colors.orange;
     } else {
-      return SeniorTheme.errorColor; // 낮은 신뢰도 - 빨간색
+      return Colors.red;
     }
-  }
-
-  @override
-  bool shouldRepaint(final BoundingBoxPainter oldDelegate) {
-    return boundingBoxes != oldDelegate.boundingBoxes;
   }
 }
 
-/// 바운딩 박스와 함께 분석 결과를 보여주는 카드 위젯
-class FlowerDetectionCard extends StatelessWidget {
+/// 이미지에 바운딩 박스를 표시하는 전체 화면 위젯
+class FullScreenImageWithBoundingBox extends StatelessWidget {
   final File imageFile;
-  final List<BoundingBox> boundingBoxes;
-  final String title;
+  final List<DetectionResult> detectionResults;
 
-  const FlowerDetectionCard({
+  const FullScreenImageWithBoundingBox({
     super.key,
     required this.imageFile,
-    required this.boundingBoxes,
-    this.title = '객체 감지 결과',
+    required this.detectionResults,
   });
 
   @override
-  Widget build(final BuildContext context) {
-    return Container(
-      decoration: SeniorTheme.cardDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 헤더
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(SeniorConstants.spacingSmall),
-                  decoration: BoxDecoration(
-                    color: SeniorTheme.accentColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusSmall),
-                  ),
-                  child: const Icon(
-                    Icons.center_focus_strong,
-                    color: SeniorTheme.accentColor,
-                    size: SeniorConstants.iconSizeMedium,
-                  ),
-                ),
-                const SizedBox(width: SeniorConstants.spacing),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: SeniorTheme.textPrimaryColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: SeniorConstants.spacingLarge),
-            
-            // 바운딩 박스가 있는 이미지
-            Center(
-              child: ImageWithBoundingBox(
-                imageFile: imageFile,
-                boundingBoxes: boundingBoxes,
-                width: double.infinity,
-                height: 300,
-                fit: BoxFit.cover,
+  Widget build(final BuildContext context) => Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          child: ImageWithBoundingBox(
+            imageFile: imageFile,
+            detectionResults: detectionResults,
+          ),
+        ),
+      ),
+    );
+
+  /// 전체화면으로 이미지 보기
+  static void show(final BuildContext context, final File imageFile, final List<DetectionResult> detectionResults) {
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (final context) => FullScreenImageWithBoundingBox(
+          imageFile: imageFile,
+          detectionResults: detectionResults,
+        ),
+      ),
+    );
+  }
+}
+
+/// 바운딩 박스 상세 정보 위젯
+class BoundingBoxInfo extends StatelessWidget {
+  final DetectionResult detection;
+
+  const BoundingBoxInfo({
+    super.key,
+    required this.detection,
+  });
+
+  @override
+  Widget build(final BuildContext context) => Container(
+      padding: const EdgeInsets.all(SeniorConstants.spacing),
+      decoration: BoxDecoration(
+        color: SeniorTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
+        border: Border.all(color: SeniorTheme.primaryColor.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.label,
+                color: SeniorTheme.primaryColor,
+                size: 20,
               ),
-            ),
-            
-            const SizedBox(height: SeniorConstants.spacing),
-            
-            // 감지 통계
-            if (boundingBoxes.isNotEmpty) ...[
+              const SizedBox(width: SeniorConstants.spacingSmall),
               Text(
-                '감지된 객체 ${boundingBoxes.length}개',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: SeniorTheme.textSecondaryColor,
+                detection.label,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: SeniorTheme.primaryColor,
                 ),
               ),
-              const SizedBox(height: SeniorConstants.spacingSmall),
-              ...boundingBoxes.map((box) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: _getBoxColor(box.confidence),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${box.label} (${(box.confidence * 100).toInt()}%)',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              )),
-            ] else ...[
+            ],
+          ),
+          const SizedBox(height: SeniorConstants.spacingSmall),
+          Row(
+            children: [
+              Icon(
+                Icons.precision_manufacturing,
+                color: SeniorTheme.textSecondaryColor,
+                size: 16,
+              ),
+              const SizedBox(width: SeniorConstants.spacingSmall),
               Text(
-                '감지된 꽃이 없습니다',
+                '신뢰도: ${(detection.confidence * 100).toStringAsFixed(1)}%',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: SeniorTheme.textSecondaryColor,
                 ),
               ),
             ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
-  }
-
-  /// 신뢰도에 따른 색상 (카드용)
-  Color _getBoxColor(final double confidence) {
-    if (confidence >= 0.8) {
-      return SeniorTheme.successColor;
-    } else if (confidence >= 0.6) {
-      return SeniorTheme.warningColor;
-    } else {
-      return SeniorTheme.errorColor;
-    }
-  }
 } 

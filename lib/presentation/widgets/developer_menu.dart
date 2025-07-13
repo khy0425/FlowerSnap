@@ -144,7 +144,9 @@ class DeveloperMenu {
       apiProvider: 'test',
       isPremiumResult: false,
       category: 'plant',
-      boundingBoxes: const [],
+      rarity: 1,
+      additionalInfo: const {},
+      detectionResults: const [],
     );
   }
 } 
