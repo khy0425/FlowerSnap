@@ -4,76 +4,65 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
 
-/// 배너 광고 관리 서비스
-/// 무료 버전에서 지속적인 수익 창출을 위한 배너 광고 표시
+/// 배너 광고 서비스
 class BannerAdService {
-  static const String _testAdUnitId = 'ca-app-pub-3940256099942544/6300978111';
-  static const String _androidAdUnitId = 'ca-app-pub-3940256099942544/6300978111'; // 실제 배포 시 변경 필요
-  static const String _iosAdUnitId = 'ca-app-pub-3940256099942544/2934735716'; // 실제 배포 시 변경 필요
-  
   final Logger _logger = Logger();
   BannerAd? _bannerAd;
   bool _isAdLoaded = false;
-  
-  /// 광고 Unit ID 가져오기
-  String get _adUnitId {
-    if (Platform.isAndroid) {
-      return _androidAdUnitId;
-    } else if (Platform.isIOS) {
-      return _iosAdUnitId;
-    } else {
-      return _testAdUnitId;
-    }
-  }
-  
+
+  bool get isAdLoaded => _isAdLoaded;
+  BannerAd? get bannerAd => _bannerAd;
+
   /// 배너 광고 로드
-  Future<BannerAd?> loadBannerAd({
-    AdSize adSize = AdSize.banner,
-    void Function(Ad)? onAdLoaded,
-    void Function(Ad, LoadAdError)? onAdFailedToLoad,
-    void Function(Ad)? onAdClicked,
+  Future<void> loadBannerAd({
+    final AdSize? adSize,
+    final void Function(Ad)? onAdLoaded,
+    final void Function(Ad, LoadAdError)? onAdFailedToLoad,
+    final void Function(Ad)? onAdClicked,
   }) async {
-    try {
-      _logger.i('배너 광고 로드 시작...');
-      
-      _bannerAd = BannerAd(
-        adUnitId: _adUnitId,
-        size: adSize,
-        request: const AdRequest(),
-        listener: BannerAdListener(
-          onAdLoaded: (final Ad ad) {
-            _logger.i('💡 배너 광고 로드 완료');
-            _isAdLoaded = true;
-            onAdLoaded?.call(ad);
-          },
-          onAdFailedToLoad: (final Ad ad, final LoadAdError error) {
-            _logger.e('배너 광고 로드 실패: $error');
-            _isAdLoaded = false;
-            ad.dispose();
-            _bannerAd = null;
-            onAdFailedToLoad?.call(ad, error);
-          },
-          onAdClicked: (final Ad ad) {
-            _logger.i('배너 광고 클릭됨');
-            onAdClicked?.call(ad);
-          },
-          onAdImpression: (final Ad ad) {
-            _logger.i('배너 광고 노출됨');
-          },
-        ),
-      );
-      
-      await _bannerAd!.load();
-      return _bannerAd;
-    } catch (e) {
-      _logger.e('배너 광고 로드 중 오류: $e');
-      _isAdLoaded = false;
-      return null;
-    }
+    final String adUnitId = Platform.isAndroid 
+        ? 'ca-app-pub-3940256099942544/6300978111' // 테스트 광고 ID
+        : 'ca-app-pub-3940256099942544/2934735716'; // iOS 테스트 광고 ID
+
+    _bannerAd = BannerAd(
+      adUnitId: adUnitId,
+      size: adSize ?? AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (final Ad ad) {
+          _logger.i('💡 배너 광고 로드 완료');
+          _isAdLoaded = true;
+          onAdLoaded?.call(ad);
+        },
+        onAdFailedToLoad: (final Ad ad, final LoadAdError error) {
+          _logger.e('❌ 배너 광고 로드 실패: ${error.message}');
+          _isAdLoaded = false;
+          ad.dispose();
+          onAdFailedToLoad?.call(ad, error);
+        },
+        onAdClicked: (final Ad ad) {
+          _logger.i('배너 광고 클릭됨');
+          onAdClicked?.call(ad);
+        },
+        onAdImpression: (final Ad ad) {
+          _logger.d('배너 광고 노출');
+        },
+      ),
+    );
+
+    await _bannerAd!.load();
   }
-  
-  /// 배너 광고 위젯 생성
-  Widget? createBannerWidget() {
+
+  /// 광고 해제
+  void dispose() {
+    _bannerAd?.dispose();
+    _bannerAd = null;
+    _isAdLoaded = false;
+    _logger.d('배너 광고 서비스 해제');
+  }
+
+  /// 광고 표시를 위한 위젯 반환
+  Widget buildAdWidget() {
     if (_bannerAd != null && _isAdLoaded) {
       return SizedBox(
         width: _bannerAd!.size.width.toDouble(),
@@ -81,17 +70,18 @@ class BannerAdService {
         child: AdWidget(ad: _bannerAd!),
       );
     }
-    return null;
+    return const SizedBox.shrink();
   }
-  
-  /// 광고가 로드되었는지 확인
-  bool isAdLoaded() => _isAdLoaded && _bannerAd != null;
-  
-  /// 리소스 해제
-  void dispose() {
-    _bannerAd?.dispose();
-    _bannerAd = null;
-    _isAdLoaded = false;
+
+  /// 광고 클릭 핸들러
+  void onAdClick(final BuildContext context) {
+    _logger.i('배너 광고 클릭 처리');
+    // 클릭 후 처리 로직이 필요하면 여기에 추가
+  }
+
+  /// 테스트용 광고 데이터 설정
+  void setTestMode() {
+    _logger.d('🧪 배너 광고 테스트 모드 활성화');
   }
 }
 
@@ -122,14 +112,15 @@ class _FreeBannerAdWidgetState extends State<FreeBannerAdWidget> {
   }
 
   Future<void> _loadBannerAd() async {
-    _bannerAd = await _bannerAdService.loadBannerAd(
+    await _bannerAdService.loadBannerAd(
       adSize: AdSize.banner,
-      onAdLoaded: (Ad ad) {
+      onAdLoaded: (final Ad ad) {
         setState(() {
+          _bannerAd = ad as BannerAd;
           _isLoaded = true;
         });
       },
-      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+      onAdFailedToLoad: (final Ad ad, final LoadAdError error) {
         setState(() {
           _isLoaded = false;
         });

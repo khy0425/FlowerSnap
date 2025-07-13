@@ -1,141 +1,94 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
 
-/// 리워드 광고 관리 서비스
-/// Google Mobile Ads를 활용하여 리워드 광고 표시 및 보상 처리
+/// 리워드 광고 서비스
 class RewardAdService {
-  static const String _testAdUnitId = 'ca-app-pub-3940256099942544/5224354917';
-  static const String _androidAdUnitId = 'ca-app-pub-3940256099942544/5224354917'; // 실제 배포 시 변경 필요
-  static const String _iosAdUnitId = 'ca-app-pub-3940256099942544/1712485313'; // 실제 배포 시 변경 필요
-  
   final Logger _logger = Logger();
   RewardedAd? _rewardedAd;
   bool _isAdLoaded = false;
-  
-  /// 광고 Unit ID 가져오기
-  String get _adUnitId {
-    if (Platform.isAndroid) {
-      return _androidAdUnitId;
-    } else if (Platform.isIOS) {
-      return _iosAdUnitId;
-    } else {
-      return _testAdUnitId;
-    }
-  }
-  
+
+  bool get isAdLoaded => _isAdLoaded;
+
   /// 리워드 광고 로드
-  Future<bool> loadRewardedAd() async {
-    try {
-      _logger.i('리워드 광고 로드 시작...');
-      
-      await RewardedAd.load(
-        adUnitId: _adUnitId,
-        request: const AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (final RewardedAd ad) {
-            _logger.i('리워드 광고 로드 완료');
-            _rewardedAd = ad;
-            _isAdLoaded = true;
-            _setAdCallbacks();
-          },
-          onAdFailedToLoad: (final LoadAdError error) {
-            _logger.e('리워드 광고 로드 실패: $error');
-            _isAdLoaded = false;
-            _rewardedAd = null;
-          },
-        ),
-      );
-      
-      // 로드 완료까지 최대 10초 대기
-      for (int i = 0; i < 100; i++) {
-        await Future<void>.delayed(const Duration(milliseconds: 100));
-        if (_isAdLoaded) break;
-      }
-      
-      return _isAdLoaded;
-    } catch (e) {
-      _logger.e('리워드 광고 로드 중 오류: $e');
-      _isAdLoaded = false;
-      return false;
-    }
+  Future<void> loadRewardAd() async {
+    final String adUnitId = Platform.isAndroid
+        ? 'ca-app-pub-3940256099942544/5224354917' // 테스트 광고 ID
+        : 'ca-app-pub-3940256099942544/1712485313'; // iOS 테스트 광고 ID
+
+    await RewardedAd.load(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (final RewardedAd ad) {
+          _logger.i('리워드 광고 로드 완료');
+          _rewardedAd = ad;
+          _isAdLoaded = true;
+          _setAdCallbacks();
+        },
+        onAdFailedToLoad: (final LoadAdError error) {
+          _logger.e('리워드 광고 로드 실패: ${error.message}');
+          _rewardedAd = null;
+          _isAdLoaded = false;
+        },
+      ),
+    );
   }
-  
+
   /// 광고 콜백 설정
   void _setAdCallbacks() {
     _rewardedAd?.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (RewardedAd ad) {
-        _logger.i('리워드 광고 표시됨');
+      onAdShowedFullScreenContent: (final RewardedAd ad) {
+        _logger.i('리워드 광고 전체화면 표시');
       },
-      onAdDismissedFullScreenContent: (RewardedAd ad) {
+      onAdDismissedFullScreenContent: (final RewardedAd ad) {
         _logger.i('리워드 광고 닫힘');
         ad.dispose();
         _rewardedAd = null;
         _isAdLoaded = false;
+        loadRewardAd(); // 다음 광고 미리 로드
       },
-      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-        _logger.e('리워드 광고 표시 실패: $error');
+      onAdFailedToShowFullScreenContent: (final RewardedAd ad, final AdError error) {
+        _logger.e('리워드 광고 표시 실패: ${error.message}');
         ad.dispose();
         _rewardedAd = null;
         _isAdLoaded = false;
       },
     );
   }
-  
+
   /// 리워드 광고 표시
-  /// [onUserEarnedReward] 광고 시청 완료 시 호출되는 콜백
-  /// [onAdClosed] 광고 닫힘 시 호출되는 콜백
-  Future<void> showRewardedAd({
-    required void Function(RewardItem reward) onUserEarnedReward,
-    void Function()? onAdClosed,
-    void Function(String error)? onAdFailed,
+  Future<void> showRewardAd({
+    final void Function(AdWithoutView, RewardItem)? onUserEarnedReward,
+    final VoidCallback? onAdClosed,
+    final void Function(String)? onAdFailed,
   }) async {
     if (!_isAdLoaded || _rewardedAd == null) {
-      _logger.w('리워드 광고가 로드되지 않았습니다.');
-      onAdFailed?.call('광고가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
+      onAdFailed?.call('광고가 아직 로드되지 않았습니다');
       return;
     }
-    
-    try {
-      await _rewardedAd!.show(
-        onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-          _logger.i('리워드 광고 보상 획득: ${reward.type}, ${reward.amount}');
-          onUserEarnedReward(reward);
-        },
-      );
-      
-      // 광고 표시 후 콜백 설정
-      _rewardedAd?.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (RewardedAd ad) {
-          _logger.i('리워드 광고 닫힘');
-          ad.dispose();
-          _rewardedAd = null;
-          _isAdLoaded = false;
-          onAdClosed?.call();
-        },
-        onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-          _logger.e('리워드 광고 표시 실패: $error');
-          ad.dispose();
-          _rewardedAd = null;
-          _isAdLoaded = false;
-          onAdFailed?.call('광고 표시 중 오류가 발생했습니다: ${error.message}');
-        },
-      );
-    } catch (e) {
-      _logger.e('리워드 광고 표시 중 오류: $e');
-      onAdFailed?.call('광고 표시 중 오류가 발생했습니다.');
-    }
+
+    _rewardedAd!.setImmersiveMode(true);
+
+    await _rewardedAd!.show(
+      onUserEarnedReward: (final AdWithoutView ad, final RewardItem reward) {
+        _logger.i('리워드 획득: ${reward.amount} ${reward.type}');
+        onUserEarnedReward?.call(ad, reward);
+      },
+    );
+
+    // 광고 종료 후 콜백 호출
+    onAdClosed?.call();
   }
-  
-  /// 광고가 로드되었는지 확인
-  bool isAdLoaded() => _isAdLoaded && _rewardedAd != null;
-  
+
   /// 리소스 해제
   void dispose() {
     _rewardedAd?.dispose();
     _rewardedAd = null;
     _isAdLoaded = false;
+    _logger.d('리워드 광고 서비스 해제');
   }
   
   /// Google Mobile Ads 초기화

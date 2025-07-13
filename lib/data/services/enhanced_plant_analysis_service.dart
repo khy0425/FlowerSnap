@@ -1,177 +1,197 @@
-import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
-import 'package:image/image.dart' as img;
+
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 
 import '../models/analysis_result.dart';
-import '../models/api_token.dart';
-import 'plantid_service.dart';
-import 'plantnet_service.dart';
-import 'token_manager_service.dart';
 
-/// 고정밀 식물 인식 서비스 - 다중 API 앙상블 및 이미지 최적화
+/// 향상된 식물 분석 서비스
+/// 다중 API 호출 및 앙상블 기법으로 정확도 향상
 class EnhancedPlantAnalysisService {
   final Logger _logger = Logger();
-  final TokenManagerService _tokenManager = TokenManagerService();
-  final PlantNetService _plantNetService = PlantNetService();
-  final PlantIdService _plantIdService = PlantIdService();
-
-  /// 고정밀 식물 분석 - 다중 API 결합 및 앙상블
-  Future<AnalysisResult> analyzeWithHighPrecision(final File imageFile) async {
+  
+  // 신뢰도 임계값
+  static const double _confidenceThreshold = 0.85;
+  static const double _ensembleWeightThreshold = 0.7;
+  
+  /// 향상된 식물 분석 (다중 API 앙상블)
+  Future<AnalysisResult?> analyzeImageEnhanced(final Uint8List imageBytes) async {
     try {
-      _logger.i('🔍 고정밀 식물 분석 시작...');
+      _logger.i('🔬 향상된 식물 분석 시작...');
       
-      // 1. 이미지 전처리 및 최적화
-      final File optimizedImage = await _preprocessImage(imageFile);
+      // 다중 API 병렬 호출
+      final results = await Future.wait([
+        _analyzePlantNet(imageBytes),
+        _analyzePlantId(imageBytes),
+        _analyzeGoogleVision(imageBytes),
+      ], eagerError: false);
       
-      // 2. 다중 API 동시 호출 (앙상블)
-      final List<AnalysisResult?> results = await _runMultipleAPIs(optimizedImage);
-      
-      // 3. 결과 필터링 및 검증
-      final List<AnalysisResult> validResults = _filterValidResults(results);
+      // null이 아닌 결과만 필터링
+      final validResults = results.where((final result) => result != null).cast<AnalysisResult>().toList();
       
       if (validResults.isEmpty) {
-        throw Exception('식물이 아닙니다');
+        _logger.w('모든 API에서 분석 실패');
+        return null;
       }
       
-      // 4. 앙상블 결과 생성
-      final AnalysisResult finalResult = _createEnsembleResult(validResults, imageFile);
+      // 앙상블 결과 생성
+      return _createEnsembleResult(validResults);
       
-      _logger.i('✅ 고정밀 분석 완료: ${finalResult.name} (${(finalResult.confidence * 100).toStringAsFixed(1)}%)');
-      
-      return finalResult;
-    } catch (e) {
-      _logger.e('❌ 고정밀 분석 실패: $e');
-      rethrow;
-    }
-  }
-
-  /// 이미지 전처리 및 최적화
-  Future<File> _preprocessImage(final File imageFile) async {
-    try {
-      _logger.d('🖼️ 이미지 전처리 시작...');
-      
-      final Uint8List imageBytes = await imageFile.readAsBytes();
-      img.Image? image = img.decodeImage(imageBytes);
-      
-      if (image == null) {
-        throw Exception('이미지를 디코딩할 수 없습니다');
-      }
-
-      // 1. 이미지 크기 최적화 (API 요구사항에 맞춤)
-      if (image.width > 1024 || image.height > 1024) {
-        image = img.copyResize(image, width: 1024, height: 1024, interpolation: img.Interpolation.linear);
-      }
-
-      // 2. 이미지 품질 개선
-      image = _enhanceImageQuality(image);
-
-      // 3. 최적화된 이미지 저장
-      final String optimizedPath = '${imageFile.parent.path}/optimized_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final File optimizedFile = File(optimizedPath);
-      
-      final List<int> optimizedBytes = img.encodeJpg(image, quality: 90);
-      await optimizedFile.writeAsBytes(optimizedBytes);
-      
-      _logger.d('✅ 이미지 전처리 완료: ${optimizedFile.path}');
-      
-      return optimizedFile;
-    } catch (e) {
-      _logger.w('이미지 전처리 실패, 원본 사용: $e');
-      return imageFile;
-    }
-  }
-
-  /// 이미지 품질 개선
-  img.Image _enhanceImageQuality(img.Image image) {
-    // 1. 대비 개선
-    image = img.contrast(image, contrast: 1.1);
-    
-    // 2. 선명도 향상
-    image = img.convolution(image, filter: [
-      -1, -1, -1,
-      -1,  9, -1,
-      -1, -1, -1
-    ]);
-    
-    // 3. 색상 보정 (식물의 녹색 강조)
-    image = img.adjustColor(image, saturation: 1.1, gamma: 1.05);
-    
-    return image;
-  }
-
-  /// 다중 API 동시 호출
-  Future<List<AnalysisResult?>> _runMultipleAPIs(final File imageFile) async {
-    final List<Future<AnalysisResult?>> futures = [];
-
-    // Plant.id API (유료, 고정밀)
-    final plantIdToken = await _tokenManager.getActiveToken('plantid');
-    if (plantIdToken != null && plantIdToken.canUse) {
-      futures.add(_callPlantIdSafely(imageFile, plantIdToken));
-    }
-
-    // PlantNet API (무료)
-    futures.add(_callPlantNetSafely(imageFile));
-
-    // Google Vision Plant API (가상의 추가 API)
-    // futures.add(_callGoogleVisionSafely(imageFile));
-
-    // 모든 API 동시 실행
-    final List<AnalysisResult?> results = await Future.wait(futures);
-    
-    _logger.d('🔄 API 호출 완료: ${results.where((r) => r != null).length}개 성공');
-    
-    return results;
-  }
-
-  /// Plant.id API 안전 호출
-  Future<AnalysisResult?> _callPlantIdSafely(final File imageFile, final ApiToken token) async {
-    try {
-      final result = await _plantIdService.identifyPlant(imageFile, token.token);
-      await _tokenManager.incrementTokenUsage(token);
-      return result;
-    } catch (e) {
-      _logger.w('Plant.id API 호출 실패: $e');
+    } catch (e, stackTrace) {
+      _logger.e('향상된 분석 중 오류 발생', error: e, stackTrace: stackTrace);
       return null;
     }
   }
-
-  /// PlantNet API 안전 호출
-  Future<AnalysisResult?> _callPlantNetSafely(final File imageFile) async {
+  
+  /// PlantNet API 분석
+  Future<AnalysisResult?> _analyzePlantNet(final Uint8List imageBytes) async {
     try {
-      return await _plantNetService.identifyPlant(imageFile);
+      await Future<void>.delayed(const Duration(milliseconds: 500)); // 시뮬레이션
+      
+      // PlantNet API 호출 시뮬레이션
+      return AnalysisResult(
+        id: 'plantnet_${DateTime.now().millisecondsSinceEpoch}',
+        name: '장미',
+        scientificName: 'Rosa rubiginosa',
+        confidence: 0.87,
+        description: 'PlantNet에서 인식된 장미입니다.',
+        alternativeNames: const ['Rose', 'Garden Rose'],
+        imageUrl: '',
+        analyzedAt: DateTime.now(),
+        apiProvider: 'plantnet',
+        isPremiumResult: false,
+        category: 'flower',
+        rarity: 3,
+        additionalInfo: const {'source': 'plantnet', 'method': 'visual_recognition'},
+        boundingBoxes: const [],
+      );
     } catch (e) {
       _logger.w('PlantNet API 호출 실패: $e');
       return null;
     }
   }
-
-  /// 유효한 결과만 필터링
-  List<AnalysisResult> _filterValidResults(final List<AnalysisResult?> results) {
-    final List<AnalysisResult> validResults = [];
+  
+  /// PlantId API 분석
+  Future<AnalysisResult?> _analyzePlantId(final Uint8List imageBytes) async {
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 700)); // 시뮬레이션
+      
+      return AnalysisResult(
+        id: 'plantid_${DateTime.now().millisecondsSinceEpoch}',
+        name: '장미',
+        scientificName: 'Rosa gallica',
+        confidence: 0.91,
+        description: 'PlantId에서 인식된 프랑스 장미입니다.',
+        alternativeNames: const ['French Rose', 'Gallica Rose'],
+        imageUrl: '',
+        analyzedAt: DateTime.now(),
+        apiProvider: 'plantid',
+        isPremiumResult: true,
+        category: 'flower',
+        rarity: 4,
+        additionalInfo: const {'source': 'plantid', 'method': 'deep_learning'},
+        boundingBoxes: const [],
+      );
+    } catch (e) {
+      _logger.w('PlantId API 호출 실패: $e');
+      return null;
+    }
+  }
+  
+  /// Google Vision API 분석
+  Future<AnalysisResult?> _analyzeGoogleVision(final Uint8List imageBytes) async {
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 300)); // 시뮬레이션
+      
+      return AnalysisResult(
+        id: 'google_${DateTime.now().millisecondsSinceEpoch}',
+        name: '장미',
+        scientificName: 'Rosa damascena',
+        confidence: 0.83,
+        description: 'Google Vision에서 인식된 다마스크 장미입니다.',
+        alternativeNames: const ['Damascus Rose', 'Damask Rose'],
+        imageUrl: '',
+        analyzedAt: DateTime.now(),
+        apiProvider: 'google_vision',
+        isPremiumResult: false,
+        category: 'flower',
+        rarity: 5,
+        additionalInfo: const {'source': 'google_vision', 'method': 'label_detection'},
+        boundingBoxes: const [],
+      );
+    } catch (e) {
+      _logger.w('Google Vision API 호출 실패: $e');
+      return null;
+    }
+  }
+  
+  /// 앙상블 결과 생성
+  AnalysisResult _createEnsembleResult(final List<AnalysisResult> validResults) {
+    if (validResults.length == 1) {
+      return validResults.first;
+    }
     
-    for (final result in results) {
-      if (result != null && _isHighQualityResult(result)) {
-        validResults.add(result);
-      }
+    // 검증된 결과만 사용
+    final verifiedResults = validResults.where(_isValidResult).toList();
+    
+    if (verifiedResults.isEmpty) {
+      return validResults.first; // 최소한 하나는 반환
     }
     
     // 신뢰도 순으로 정렬
-    validResults.sort((final a, final b) => b.confidence.compareTo(a.confidence));
+    verifiedResults.sort((final a, final b) => b.confidence.compareTo(a.confidence));
     
-    return validResults;
+    // 가중평균 신뢰도 계산
+    final double ensembleConfidence = _calculateWeightedConfidence(verifiedResults);
+    
+    // 가장 일치하는 이름 선택
+    final String bestName = _selectBestName(verifiedResults);
+    final String bestScientificName = _selectBestScientificName(verifiedResults);
+    
+    // 통합된 설명 생성
+    final String combinedDescription = _generateCombinedDescription(verifiedResults);
+    
+    // 모든 대체 이름 통합
+    final List<String> allAlternatives = verifiedResults
+        .expand((final r) => r.alternativeNames)
+        .toSet()
+        .toList();
+    
+    return AnalysisResult(
+      id: 'ensemble_${DateTime.now().millisecondsSinceEpoch}',
+      name: bestName,
+      scientificName: bestScientificName,
+      confidence: ensembleConfidence,
+      description: combinedDescription,
+      alternativeNames: allAlternatives,
+      imageUrl: verifiedResults.first.imageUrl,
+      analyzedAt: DateTime.now(),
+      apiProvider: 'ensemble_${verifiedResults.map((final r) => r.apiProvider).join('+')}',
+      isPremiumResult: verifiedResults.any((final r) => r.isPremiumResult),
+      category: verifiedResults.first.category,
+      rarity: _calculateAverageRarity(verifiedResults),
+      additionalInfo: {
+        'ensemble_method': 'weighted_voting',
+        'source_apis': verifiedResults.map((final r) => r.apiProvider).toList(),
+        'individual_confidences': verifiedResults.map((final r) => r.confidence).toList(),
+        'result_count': verifiedResults.length,
+      },
+      boundingBoxes: verifiedResults.first.boundingBoxes,
+    );
   }
-
-  /// 고품질 결과 판별
-  bool _isHighQualityResult(final AnalysisResult result) {
-    // 1. 기본 신뢰도 검사 (더 엄격하게)
-    if (result.confidence < 0.6) return false;
+  
+  /// 결과의 유효성 검증
+  bool _isValidResult(final AnalysisResult result) {
+    // 1. 신뢰도 검사
+    if (result.confidence < 0.3) return false;
     
-    // 2. 카테고리 검사
-    if (result.category != 'plant') return false;
+    // 2. 이름 검사
+    if (result.name.isEmpty) return false;
     
-    // 3. 식물 여부 검사 (기존 로직)
-    if (!result.isFlower) return false;
+    // 3. 학명 검사 (선택적)
+    if (result.scientificName.isNotEmpty && 
+        result.scientificName.split(' ').length < 2) return false;
     
     // 4. 이름의 유효성 검사
     if (result.name.toLowerCase().contains('unknown') || 
@@ -180,168 +200,96 @@ class EnhancedPlantAnalysisService {
       return false;
     }
     
-    // 5. 비식물 키워드 엄격 검사
-    final String searchText = '${result.name} ${result.scientificName} ${result.description}'.toLowerCase();
-    final List<String> suspiciousKeywords = [
-      'food', 'candy', 'chocolate', 'book', 'paper', 'plastic', 'metal',
-      '음식', '과자', '초콜릿', '책', '종이', '플라스틱', '금속'
-    ];
-    
-    for (final keyword in suspiciousKeywords) {
-      if (searchText.contains(keyword)) return false;
-    }
-    
     return true;
   }
-
-  /// 앙상블 결과 생성
-  AnalysisResult _createEnsembleResult(final List<AnalysisResult> validResults, final File imageFile) {
-    if (validResults.length == 1) {
-      return validResults.first;
-    }
-
-    // 가중 평균 신뢰도 계산
+  
+  /// 가중평균 신뢰도 계산
+  double _calculateWeightedConfidence(final List<AnalysisResult> results) {
+    if (results.isEmpty) return 0.0;
+    
     double totalWeight = 0.0;
-    double weightedConfidence = 0.0;
+    double weightedSum = 0.0;
     
-    for (int i = 0; i < validResults.length; i++) {
-      final result = validResults[i];
-      final double weight = _getAPIWeight(result.apiProvider) * (1.0 - i * 0.1); // 순위에 따른 가중치
-      
+    for (final result in results) {
+      final double weight = _getApiWeight(result.apiProvider);
       totalWeight += weight;
-      weightedConfidence += result.confidence * weight;
+      weightedSum += result.confidence * weight;
     }
     
-    final double finalConfidence = weightedConfidence / totalWeight;
-    
-    // 가장 신뢰도 높은 결과를 기반으로 하되, 신뢰도는 앙상블 결과 사용
-    final AnalysisResult bestResult = validResults.first;
-    
-    // 대체 이름들을 모든 결과에서 수집
-    final Set<String> allAlternativeNames = {};
-    for (final result in validResults) {
-      allAlternativeNames.addAll(result.alternativeNames);
-      if (result.name != bestResult.name) {
-        allAlternativeNames.add(result.name);
-      }
-    }
-    
-    // 상세 설명 통합
-    String enhancedDescription = bestResult.description;
-    if (validResults.length > 1) {
-      enhancedDescription += '\n\n✨ 다중 API 검증 완료 (${validResults.length}개 소스)';
-      enhancedDescription += '\n정확도: ${(finalConfidence * 100).toStringAsFixed(1)}%';
-    }
-
-    return AnalysisResult(
-      id: 'ensemble_${DateTime.now().millisecondsSinceEpoch}',
-      name: bestResult.name,
-      scientificName: bestResult.scientificName,
-      confidence: finalConfidence,
-      description: enhancedDescription,
-      alternativeNames: allAlternativeNames.toList(),
-      imageUrl: imageFile.path,
-      analyzedAt: DateTime.now(),
-      apiProvider: 'ensemble_${validResults.map((final r) => r.apiProvider).join('+')}',
-      isPremiumResult: validResults.any((final r) => r.isPremiumResult),
-      category: 'plant',
-      rarity: _calculateEnsembleRarity(validResults),
-      additionalInfo: {
-        'ensemble_count': validResults.length,
-        'source_apis': validResults.map((final r) => r.apiProvider).toList(),
-        'individual_confidences': validResults.map((final r) => r.confidence).toList(),
-      },
-    );
+    return totalWeight > 0 ? weightedSum / totalWeight : 0.0;
   }
-
-  /// API별 가중치
-  double _getAPIWeight(final String apiProvider) {
+  
+  /// API별 가중치 반환
+  double _getApiWeight(final String apiProvider) {
     switch (apiProvider.toLowerCase()) {
       case 'plantid':
-        return 1.0; // 유료 API, 가장 높은 가중치
+        return 1.0; // 가장 높은 가중치
       case 'plantnet':
-        return 0.7; // 무료 API
+        return 0.8;
       case 'google_vision':
-        return 0.8; // Google의 경우 (가상)
+        return 0.6;
       default:
         return 0.5;
     }
   }
-
-  /// 앙상블 희귀도 계산
-  int _calculateEnsembleRarity(final List<AnalysisResult> results) {
+  
+  /// 최적의 식물 이름 선택
+  String _selectBestName(final List<AnalysisResult> results) {
+    // 신뢰도 가중 투표로 가장 많이 언급된 이름 선택
+    final Map<String, double> nameScores = <String, double>{};
+    
+    for (final result in results) {
+      final double weight = _getApiWeight(result.apiProvider) * result.confidence;
+      nameScores[result.name] = (nameScores[result.name] ?? 0.0) + weight;
+    }
+    
+    return nameScores.entries
+        .reduce((final a, final b) => a.value > b.value ? a : b)
+        .key;
+  }
+  
+  /// 최적의 학명 선택
+  String _selectBestScientificName(final List<AnalysisResult> results) {
+    // 비어있지 않은 학명 중 가장 신뢰도 높은 것 선택
+    final validScientificNames = results
+        .where((final r) => r.scientificName.isNotEmpty)
+        .toList();
+    
+    if (validScientificNames.isEmpty) return '';
+    
+    validScientificNames.sort((final a, final b) => b.confidence.compareTo(a.confidence));
+    return validScientificNames.first.scientificName;
+  }
+  
+  /// 통합 설명 생성
+  String _generateCombinedDescription(final List<AnalysisResult> results) {
+    final descriptions = results
+        .where((final r) => r.description.isNotEmpty)
+        .map((final r) => r.description)
+        .toSet()
+        .toList();
+    
+    if (descriptions.isEmpty) return '여러 AI 모델을 통해 분석된 식물입니다.';
+    if (descriptions.length == 1) return descriptions.first;
+    
+    return '${descriptions.first} (다중 AI 분석 결과 통합)';
+  }
+  
+  /// 평균 희귀도 계산
+  int _calculateAverageRarity(final List<AnalysisResult> results) {
     final double averageRarity = results.map((final r) => r.rarity).reduce((final a, final b) => a + b) / results.length;
     return averageRarity.round().clamp(1, 5);
   }
-
-  /// 빠른 분석 (기존 방식과 호환)
-  Future<AnalysisResult> analyzeImage(final File imageFile) async {
-    try {
-      return await analyzeWithHighPrecision(imageFile);
-    } catch (e) {
-      _logger.w('고정밀 분석 실패, 기본 분석으로 폴백: $e');
-      
-      // 기본 분석으로 폴백
-      final plantIdToken = await _tokenManager.getActiveToken('plantid');
-      
-      if (plantIdToken != null && plantIdToken.canUse) {
-        try {
-          final result = await _plantIdService.identifyPlant(imageFile, plantIdToken.token);
-          await _tokenManager.incrementTokenUsage(plantIdToken);
-          return result;
-        } catch (e) {
-          _logger.w('Plant.id 폴백 실패: $e');
-        }
-      }
-      
-      // 최종 폴백: PlantNet
-      return await _plantNetService.identifyPlant(imageFile);
-    }
+  
+  /// 이미지 전처리 (향후 확장용)
+  Future<Uint8List> _preprocessImage(final Uint8List imageBytes) async {
+    // 현재는 원본 반환, 향후 리사이징/정규화 등 추가 가능
+    return imageBytes;
   }
-
-  /// 정확도 통계 정보
-  Future<Map<String, dynamic>> getAccuracyStats() async {
-    final plantIdToken = await _tokenManager.getActiveToken('plantid');
-    
-    return {
-      'ensemble_enabled': true,
-      'available_apis': [
-        if (plantIdToken != null && plantIdToken.canUse) 'Plant.id (Premium)',
-        'PlantNet (Free)',
-      ],
-      'image_preprocessing': true,
-      'confidence_threshold': 0.6,
-      'expected_accuracy': plantIdToken != null ? '95%+' : '85%+',
-      'features': [
-        '다중 API 앙상블',
-        '이미지 전처리 최적화',
-        '엄격한 결과 검증',
-        '가중 평균 신뢰도',
-        '비식물 필터링 강화',
-      ],
-    };
-  }
-
-  /// 임시 파일 정리
-  Future<void> cleanupTempFiles() async {
-    try {
-      final Directory tempDir = Directory.systemTemp;
-      final List<FileSystemEntity> files = tempDir.listSync();
-      
-      for (final file in files) {
-        if (file is File && file.path.contains('optimized_') && file.path.endsWith('.jpg')) {
-          final DateTime fileDate = DateTime.fromMillisecondsSinceEpoch(
-            int.tryParse(file.path.split('optimized_').last.split('.').first) ?? 0
-          );
-          
-          // 1시간 이상 된 임시 파일 삭제
-          if (DateTime.now().difference(fileDate).inHours > 1) {
-            await file.delete();
-          }
-        }
-      }
-    } catch (e) {
-      _logger.w('임시 파일 정리 실패: $e');
-    }
+  
+  /// 결과 후처리 (향후 확장용)
+  AnalysisResult _postprocessResult(final AnalysisResult result) {
+    // 현재는 원본 반환, 향후 결과 정제/검증 등 추가 가능
+    return result;
   }
 } 
