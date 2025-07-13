@@ -1,0 +1,74 @@
+# TunnelCast 프로젝트에서 검증된 build.yaml 설정
+# JSON 직렬화 및 코드 생성 최적화
+
+# ═══════════════════════════════════════════════════════════════
+# 🎯 TARGET CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+targets:
+  $default:
+    builders:
+      # === JSON 직렬화 빌더 ===
+      json_serializable:
+        enabled: true
+        generate_for:
+          include:
+            - lib/data/models/**/*.dart
+          exclude:
+            - lib/data/models/enums/**/*.dart # enum 파일 제외
+            - lib/data/models/models.dart # 배럴 파일 제외
+        options:
+          explicit_to_json: true # toJson 명시적 생성
+          include_if_null: false # null 값 제외
+          checked: true # 타입 검증 활성화
+          create_factory: true # fromJson 팩토리 생성
+          create_to_json: true # toJson 메서드 생성
+          field_rename: none # 필드명 변환 없음
+          any_map: false # Map<String, dynamic> 강제
+          disallow_unrecognized_keys: false # 인식되지 않는 키 허용
+
+      # === Hive 어댑터 생성 ===
+      hive_generator:
+        enabled: true
+        generate_for:
+          include:
+            - lib/data/models/**/*.dart
+
+# ═══════════════════════════════════════════════════════════════
+# 🌐 GLOBAL OPTIONS
+# ═══════════════════════════════════════════════════════════════
+global_options:
+  # JSON 직렬화 전역 설정
+  json_serializable:
+    options:
+      explicit_to_json: true
+      include_if_null: false
+      checked: true
+      create_factory: true
+      create_to_json: true
+      field_rename: none
+      any_map: false
+      disallow_unrecognized_keys: false
+
+  # Hive 어댑터 전역 설정
+  hive_generator:
+    options:
+      ignore_for_file:
+        - type=lint
+        - unused_element
+        - deprecated_member_use
+
+# ═══════════════════════════════════════════════════════════════
+# 🔧 PERFORMANCE NOTES
+# ═══════════════════════════════════════════════════════════════
+
+# 권장 빌드 명령어:
+# dart run build_runner build --delete-conflicting-outputs
+# dart run build_runner build --verbose                    # 상세 로그
+# dart run build_runner watch --delete-conflicting-outputs # 감시 모드
+# dart run build_runner clean                              # 캐시 정리
+
+# === 문제 해결 가이드 ===
+# 순환 참조 오류 해결:
+# 1. flutter clean && flutter pub get
+# 2. dart run build_runner clean
+# 3. dart run build_runner build --delete-conflicting-outputs 

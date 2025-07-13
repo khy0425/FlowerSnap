@@ -1,0 +1,18 @@
+# 🚀 엔터프라이즈급 build.yaml 설정 (안전한 구성)
+# JSON 직렬화 및 코드 생성 최적화
+
+targets:
+  $default:
+    builders:
+      json_serializable:
+        enabled: true
+        options:
+          explicit_to_json: true
+          include_if_null: false
+          checked: true
+          create_factory: true
+          create_to_json: true
+          field_rename: none
+
+      hive_generator:
+        enabled: true 

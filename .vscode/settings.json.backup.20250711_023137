@@ -1,0 +1,171 @@
+{
+    // ═══════════════════════════════════════════════════════════════
+    // 🔒 UTF-8 인코딩 안전성 (필수 설정)
+    // ═══════════════════════════════════════════════════════════════
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+    
+    // Dart/Flutter 파일 UTF-8 강제
+    "[dart]": {
+        "files.encoding": "utf8",
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [80, 120],
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true
+    },
+    
+    // YAML 파일 설정
+    "[yaml]": {
+        "files.encoding": "utf8",
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true
+    },
+    
+    // JSON 파일 설정
+    "[json]": {
+        "files.encoding": "utf8",
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true
+    },
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🎨 에디터 설정
+    // ═══════════════════════════════════════════════════════════════
+    "editor.fontSize": 14,
+    "editor.fontFamily": "'Fira Code', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "editor.lineHeight": 1.5,
+    "editor.minimap.enabled": true,
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 120,
+    "editor.rulers": [80, 120],
+    
+    // 자동 저장 및 포맷팅
+    "files.autoSave": "onFocusChange",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🐛 Flutter/Dart 개발 설정
+    // ═══════════════════════════════════════════════════════════════
+    "dart.previewFlutterUiGuides": true,
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "dart.flutterOutline": true,
+    "dart.closingLabels": true,
+    "dart.showTodos": true,
+    "dart.runPubGetOnPubspecChanges": true,
+    "dart.warnWhenEditingFilesOutsideWorkspace": true,
+    "dart.lineLength": 120,
+    
+    // Dart 분석기 설정
+    "dart.analysisServerFolding": true,
+    "dart.enableCompletionCommitCharacters": true,
+    "dart.enableSdkFormatter": true,
+    "dart.insertArgumentPlaceholders": true,
+    "dart.showMainCodeLens": false,
+    "dart.showTestCodeLens": true,
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 📁 파일 탐색기 설정
+    // ═══════════════════════════════════════════════════════════════
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.dart_tool": true,
+        "**/build": true,
+        "**/*.g.dart": true,
+        "**/*.freezed.dart": true,
+        "**/*.mocks.dart": true
+    },
+    
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.dart_tool/**": true,
+        "**/build/**": true
+    },
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🔍 검색 설정
+    // ═══════════════════════════════════════════════════════════════
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "**/.dart_tool": true,
+        "**/build": true,
+        "**/*.g.dart": true,
+        "**/*.freezed.dart": true,
+        "**/*.mocks.dart": true,
+        "**/coverage": true
+    },
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🧪 테스트 설정
+    // ═══════════════════════════════════════════════════════════════
+    "dart.flutterTestAdditionalArgs": ["--coverage"],
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🎯 IntelliSense 및 자동완성
+    // ═══════════════════════════════════════════════════════════════
+    "editor.suggestSelection": "first",
+    "editor.acceptSuggestionOnCommitCharacter": true,
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "off",
+        "strings": "on"
+    },
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🔧 터미널 설정
+    // ═══════════════════════════════════════════════════════════════
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "$PSDefaultParameterValues['Out-File:Encoding']='UTF8'; $PSDefaultParameterValues['Set-Content:Encoding']='UTF8'; $Host.UI.RawUI.WindowTitle='Bloomiary Dev Terminal'"
+            ]
+        }
+    },
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🎨 테마 및 아이콘
+    // ═══════════════════════════════════════════════════════════════
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.iconTheme": "material-icon-theme",
+    
+    // ═══════════════════════════════════════════════════════════════
+    // 🚀 성능 최적화
+    // ═══════════════════════════════════════════════════════════════
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.renderWhitespace": "boundary",
+    "editor.renderControlCharacters": true,
+    
+    // 메모리 사용량 최적화
+    "typescript.disableAutomaticTypeAcquisition": true,
+    "npm.autoDetect": "off",
+    "grunt.autoDetect": "off",
+    "gulp.autoDetect": "off",
+    "jake.autoDetect": "off"
+} 

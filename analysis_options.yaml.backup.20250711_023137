@@ -1,0 +1,149 @@
+# TunnelCast 프로젝트에서 검증된 Flutter 분석 옵션
+# 엔터프라이즈급 코드 품질을 위한 엄격한 설정
+
+include: package:flutter_lints/flutter.yaml
+
+# ═══════════════════════════════════════════════════════════════
+# 🔍 ANALYZER CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+analyzer:
+  # 생성된 파일들 제외
+  exclude:
+    - "**/*.g.dart"           # JSON 직렬화 생성 파일
+    - "**/*.freezed.dart"     # Freezed 생성 파일
+    - "**/*.mocks.dart"       # Mockito 생성 파일
+    - "**/generated_plugin_registrant.dart"
+    - "build/**"
+    - ".dart_tool/**"
+
+  # 오류 심각도 설정
+  errors:
+    # 타입 안전성 강화
+    argument_type_not_assignable: error
+    invalid_assignment: error
+    return_of_invalid_type: error
+    
+    # null 안전성 강화
+    invalid_null_aware_operator: error
+    unnecessary_null_aware_assignments: error
+    
+    # 사용하지 않는 코드
+    unused_import: warning
+    unused_local_variable: warning
+    unused_field: warning
+    
+    # 성능 관련
+    use_build_context_synchronously: error
+    avoid_web_libraries_in_flutter: error
+
+  # 언어 설정
+  language:
+    strict-casts: true        # 엄격한 타입 캐스팅
+    strict-inference: true    # 엄격한 타입 추론
+    strict-raw-types: true    # 원시 타입 사용 금지
+
+# ═══════════════════════════════════════════════════════════════
+# 📏 LINTER RULES (강화된 코딩 규칙)
+# ═══════════════════════════════════════════════════════════════
+linter:
+  rules:
+    # === 타입 안전성 ===
+    always_declare_return_types: true    # 반환 타입 필수
+    prefer_typing_uninitialized_variables: true
+    type_annotate_public_apis: true      # 공개 API 타입 명시
+    avoid_dynamic_calls: true            # dynamic 호출 금지
+
+    # === null 안전성 ===
+    prefer_null_aware_operators: true
+    unnecessary_null_checks: true
+    unnecessary_null_aware_assignments: true
+    avoid_init_to_null: true
+
+    # === 불변성과 final ===
+    prefer_final_fields: true            # 필드는 final로
+    prefer_final_locals: true            # 지역 변수는 final로
+    prefer_final_in_for_each: true       # forEach에서 final 사용
+    prefer_final_parameters: true        # 매개변수 final 사용
+    avoid_setters_without_getters: true
+
+    # === 성능 최적화 ===
+    avoid_function_literals_in_foreach_calls: true
+    prefer_for_elements_to_map_fromIterable: true
+    prefer_spread_collections: true
+    prefer_collection_literals: true
+    use_string_buffers: true             # 문자열 연결 최적화
+
+    # === Widget 베스트 프랙티스 ===
+    use_key_in_widget_constructors: true
+    prefer_const_constructors: true      # const 생성자 선호
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_unnecessary_containers: true
+    use_decorated_box: true              # Container 대신 DecoratedBox
+
+    # === 함수와 메서드 ===
+    prefer_function_declarations_over_variables: true
+    avoid_classes_with_only_static_members: true
+    avoid_positional_boolean_parameters: true
+    avoid_unused_constructor_parameters: true
+    prefer_expression_function_bodies: true
+
+    # === 코드 스타일 ===
+    curly_braces_in_flow_control_structures: true
+    require_trailing_commas: true        # 후행 쉼표 필수
+    prefer_single_quotes: true           # 단일 따옴표 선호
+    unnecessary_brace_in_string_interps: true
+    avoid_escaping_inner_quotes: true
+
+    # === 명명 규칙 ===
+    camel_case_types: true               # 타입은 CamelCase
+    file_names: true                     # 파일명은 snake_case
+    non_constant_identifier_names: true  # 변수는 camelCase
+    constant_identifier_names: true      # 상수는 SCREAMING_SNAKE_CASE
+    library_names: true
+    library_prefixes: true
+
+    # === 접근성 ===
+    use_build_context_synchronously: true
+
+    # === 안전성 ===
+    avoid_empty_else: true
+    avoid_relative_lib_imports: true
+    avoid_slow_async_io: true
+    cancel_subscriptions: true
+    close_sinks: true
+    control_flow_in_finally: true
+    empty_statements: true
+    hash_and_equals: true
+    literal_only_boolean_expressions: true
+    no_adjacent_strings_in_list: true
+    no_duplicate_case_values: true
+    prefer_void_to_null: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    unrelated_type_equality_checks: true
+    valid_regexps: true
+
+    # === Flutter 특화 ===
+    avoid_print: true                    # print 대신 로거 사용
+    avoid_web_libraries_in_flutter: true
+    no_logic_in_create_state: true
+    sized_box_for_whitespace: true
+    use_full_hex_values_for_flutter_colors: true
+    use_super_parameters: true           # 슈퍼 매개변수 사용
+
+    # === 패키지 관련 ===
+    depend_on_referenced_packages: true
+    prefer_relative_imports: true
+    secure_pubspec_urls: true
+    sort_pub_dependencies: true
+
+    # === 사용 권장 ===
+    avoid_catches_without_on_clauses: true
+    avoid_catching_errors: true
+    cascade_invocations: true            # 캐스케이드 연산자 권장
+    directives_ordering: true            # import 정렬
+    unnecessary_await_in_return: true
+    unnecessary_lambdas: true
+    unnecessary_parenthesis: true
