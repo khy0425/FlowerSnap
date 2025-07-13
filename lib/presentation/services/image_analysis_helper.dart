@@ -17,7 +17,7 @@ class ImageAnalysisHelper {
   /// 사진 촬영 후 분석
   static Future<void> takePictureAndAnalyze(
     final BuildContext context, {
-    required void Function(bool) setLoading,
+    required final void Function(bool) setLoading,
   }) async {
     final XFile? image = await _pickImage(ImageSource.camera);
     if (image != null && context.mounted) {
@@ -28,7 +28,7 @@ class ImageAnalysisHelper {
   /// 갤러리에서 사진 선택 후 분석
   static Future<void> pickFromGalleryAndAnalyze(
     final BuildContext context, {
-    required void Function(bool) setLoading,
+    required final void Function(bool) setLoading,
   }) async {
     final XFile? image = await _pickImage(ImageSource.gallery);
     if (image != null && context.mounted) {
@@ -51,7 +51,7 @@ class ImageAnalysisHelper {
   static Future<void> _analyzeImage(
     final BuildContext context,
     final File imageFile, {
-    required void Function(bool) setLoading,
+    required final void Function(bool) setLoading,
   }) async {
     setLoading(true);
 

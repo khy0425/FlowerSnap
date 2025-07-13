@@ -32,7 +32,7 @@ class GardenGrid extends ConsumerWidget {
               childAspectRatio: 0.85,
             ),
             itemCount: analysisHistory.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (final context, final index) {
               final plant = analysisHistory[index];
               return _PlantCard(plant: plant, index: index);
             },
@@ -213,7 +213,7 @@ class _PlantCard extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(
                           plant.rarity,
-                          (index) => const Icon(
+                          (final index) => const Icon(
                             Icons.star,
                             color: Colors.amber,
                             size: 10,
@@ -371,13 +371,12 @@ class _PlantCard extends ConsumerWidget {
     }
   }
 
-  Color _getConfidenceColor(final double confidence) {
-    if (confidence >= 0.9) return Colors.green;
-    if (confidence >= 0.8) return Colors.lightGreen;
-    if (confidence >= 0.6) return Colors.orange;
-    if (confidence >= 0.4) return Colors.deepOrange;
-    return Colors.red;
-  }
+  Color _getConfidenceColor(final double confidence) =>
+      confidence >= 0.9 ? Colors.green :
+      confidence >= 0.8 ? Colors.lightGreen :
+      confidence >= 0.6 ? Colors.orange :
+      confidence >= 0.4 ? Colors.deepOrange :
+      Colors.red;
 
   String _getRelativeTime(final DateTime dateTime) {
     final difference = DateTime.now().difference(dateTime);
@@ -396,7 +395,7 @@ class _PlantCard extends ConsumerWidget {
   void _showPlantDetail(final BuildContext context, final AnalysisResult plant) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: Row(
           children: [
             Icon(_getIconByCategory(plant.category)),
@@ -415,7 +414,7 @@ class _PlantCard extends ConsumerWidget {
                   const Text('희귀도: '),
                   ...List.generate(
                     5,
-                    (index) => Icon(
+                    (final index) => Icon(
                       index < plant.rarity ? Icons.star : Icons.star_border,
                       color: Colors.amber,
                       size: 16,
@@ -456,8 +455,7 @@ class _PlantCard extends ConsumerWidget {
     );
   }
 
-  String _formatDateTime(final DateTime dateTime) {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
-           '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-  }
+  String _formatDateTime(final DateTime dateTime) => 
+      '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
+      '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 }

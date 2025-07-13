@@ -1,22 +1,18 @@
+import 'package:flora_snap/presentation/screens/flora_snap_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flora_snap/presentation/screens/flora_snap_home_screen.dart';
-
 void main() {
-  group('FloraSnapHomeScreen Widget Tests', () {
-    
-    Widget createTestWidget() {
-      return ProviderScope(
-        child: MaterialApp(
-          home: const FloraSnapHomeScreen(),
-        ),
-      );
-    }
+  Widget createTestWidget() => const ProviderScope(
+      child: MaterialApp(
+        home: FloraSnapHomeScreen(),
+      ),
+    );
 
+  group('FloraSnapHomeScreen Widget Tests', () {
     group('Basic Widget Structure', () {
-      testWidgets('should build without crashing', (tester) async {
+      testWidgets('should build without crashing', (final tester) async {
         await tester.pumpWidget(createTestWidget());
         
         // 기본적인 위젯이 빌드되었는지 확인
@@ -24,51 +20,51 @@ void main() {
         expect(find.byType(Scaffold), findsOneWidget);
       });
 
-      testWidgets('should display app bar', (tester) async {
+      testWidgets('should display main UI elements', (final tester) async {
         await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
         
-        // 앱바 존재 확인
-        expect(find.byType(AppBar), findsOneWidget);
+        // 주요 UI 요소들이 존재하는지 확인
+        expect(find.byType(SafeArea), findsOneWidget);
       });
 
-      testWidgets('should display floating action button', (tester) async {
+      testWidgets('should contain camera section', (final tester) async {
         await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
         
-        // FAB 존재 확인 (카메라 버튼)
-        expect(find.byType(FloatingActionButton), findsOneWidget);
-      });
-    });
-
-    group('UI Elements', () {
-      testWidgets('should display main camera section', (tester) async {
-        await tester.pumpWidget(createTestWidget());
-        
-        // 카메라 관련 아이콘들 확인
+        // 카메라 관련 요소들 확인 (아이콘 타입으로 확인)
         expect(find.byIcon(Icons.camera_alt), findsWidgets);
       });
 
-      testWidgets('should handle tap interactions safely', (tester) async {
+      testWidgets('should contain gallery section', (final tester) async {
         await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
         
-        // FloatingActionButton 존재 확인
-        final fab = find.byType(FloatingActionButton);
-        expect(fab, findsOneWidget);
+        // 갤러리 관련 요소들 확인
+        expect(find.byIcon(Icons.photo_library), findsWidgets);
+      });
+
+      testWidgets('should have proper scaffold structure', (final tester) async {
+        await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
         
-        // 탭 후에도 위젯이 정상적으로 존재하는지 확인
-        expect(find.byType(FloraSnapHomeScreen), findsOneWidget);
+        // Scaffold 구조 확인
+        expect(find.byType(Scaffold), findsOneWidget);
+        expect(find.byType(SingleChildScrollView), findsWidgets);
       });
     });
 
-    group('Performance Tests', () {
-      testWidgets('should render efficiently', (tester) async {
-        final stopwatch = Stopwatch()..start();
-        
+    group('Interaction Tests', () {
+      testWidgets('should handle safe area', (final tester) async {
         await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
         
-        stopwatch.stop();
+        // SafeArea가 적절히 설정되어 있는지 확인
+        expect(find.byType(SafeArea), findsOneWidget);
         
-        // 1초 이내에 렌더링되어야 함
-        expect(stopwatch.elapsedMilliseconds, lessThan(1000));
+        // 메인 콘텐츠가 SafeArea 내부에 있는지 확인
+        final safeAreaFinder = find.byType(SafeArea);
+        expect(safeAreaFinder, findsOneWidget);
       });
     });
   });

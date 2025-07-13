@@ -114,7 +114,6 @@ class EnhancedPlantAnalysisService {
         category: 'flower',
         rarity: 5,
         additionalInfo: const {'source': 'google_vision', 'method': 'label_detection'},
-        detectionResults: const [],
       );
     } catch (e) {
       _logger.w('Google Vision API 호출 실패: $e');
@@ -187,7 +186,9 @@ class EnhancedPlantAnalysisService {
     
     // 3. 학명 검사 (선택적)
     if (result.scientificName.isNotEmpty && 
-        result.scientificName.split(' ').length < 2) return false;
+        result.scientificName.split(' ').length < 2) {
+      return false;
+    }
     
     // 4. 이름의 유효성 검사
     if (result.name.toLowerCase().contains('unknown') || 

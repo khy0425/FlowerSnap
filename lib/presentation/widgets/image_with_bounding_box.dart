@@ -122,15 +122,10 @@ class BoundingBoxPainter extends CustomPainter {
   bool shouldRepaint(final BoundingBoxPainter oldDelegate) => detectionResults != oldDelegate.detectionResults;
 
   /// 신뢰도에 따른 바운딩 박스 색상 결정
-  Color _getBoxColor(final double confidence) {
-    if (confidence >= 0.8) {
-      return Colors.green;
-    } else if (confidence >= 0.6) {
-      return Colors.orange;
-    } else {
-      return Colors.red;
-    }
-  }
+  Color _getBoxColor(final double confidence) =>
+      confidence >= 0.8 ? Colors.green :
+      confidence >= 0.6 ? Colors.orange :
+      Colors.red;
 }
 
 /// 이미지에 바운딩 박스를 표시하는 전체 화면 위젯
@@ -201,7 +196,7 @@ class BoundingBoxInfo extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.label,
                 color: SeniorTheme.primaryColor,
                 size: 20,
@@ -219,7 +214,7 @@ class BoundingBoxInfo extends StatelessWidget {
           const SizedBox(height: SeniorConstants.spacingSmall),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.precision_manufacturing,
                 color: SeniorTheme.textSecondaryColor,
                 size: 16,

@@ -9,8 +9,7 @@ class PremiumWidgets {
     final BuildContext context, {
     required final VoidCallback onRewardAd,
     required final VoidCallback onPurchase,
-  }) {
-    return Container(
+  }) => Container(
       margin: const EdgeInsets.all(SeniorConstants.spacing),
       padding: const EdgeInsets.all(SeniorConstants.spacing),
       decoration: BoxDecoration(
@@ -25,78 +24,65 @@ class PremiumWidgets {
         borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
         border: Border.all(
           color: SeniorTheme.accentColor.withValues(alpha: 0.3),
-          width: 1,
         ),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(SeniorConstants.spacingSmall),
-                decoration: BoxDecoration(
-                  color: SeniorTheme.accentColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusSmall),
-                ),
-                child: const Icon(
-                  Icons.stars,
-                  color: SeniorTheme.accentColor,
-                  size: SeniorConstants.iconSizeMedium,
-                ),
+              const Icon(
+                Icons.star,
+                color: SeniorTheme.accentColor,
+                size: SeniorConstants.iconSizeMedium,
               ),
-              const SizedBox(width: SeniorConstants.spacing),
+              const SizedBox(width: SeniorConstants.spacingSmall),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Plant.id 프리미엄 분석",
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: SeniorTheme.accentColor,
-                      ),
-                    ),
-                    Text(
-                      "정확도 95%+ 전문 AI 분석",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: SeniorTheme.textSecondaryColor,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  '더 정확한 분석을 원하세요?',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: SeniorTheme.accentColor,
+                  ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: SeniorConstants.spacingSmall),
+          Text(
+            '광고 시청으로 무료 토큰을 받거나 프리미엄을 구매하세요',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: SeniorTheme.textSecondaryColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: SeniorConstants.spacing),
-          
-          // 간단한 액션 버튼들
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: ElevatedButton.icon(
                   onPressed: onRewardAd,
-                  icon: const Icon(Icons.play_circle_outline),
-                  label: const Text("광고 보고 토큰 받기"),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: SeniorTheme.accentColor,
-                    side: const BorderSide(color: SeniorTheme.accentColor),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: SeniorConstants.spacingSmall,
+                  icon: const Icon(Icons.play_circle_fill),
+                  label: const Text('광고 보기'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: SeniorTheme.accentColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: SeniorConstants.spacingSmall),
+              const SizedBox(width: SeniorConstants.spacing),
               Expanded(
-                child: ElevatedButton.icon(
+                child: OutlinedButton.icon(
                   onPressed: onPurchase,
-                  icon: const Icon(Icons.shopping_cart),
-                  label: const Text("토큰 구매"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SeniorTheme.accentColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: SeniorConstants.spacingSmall,
+                  icon: const Icon(Icons.diamond),
+                  label: const Text('프리미엄'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: SeniorTheme.accentColor,
+                    side: const BorderSide(color: SeniorTheme.accentColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
                     ),
                   ),
                 ),
@@ -106,13 +92,12 @@ class PremiumWidgets {
         ],
       ),
     );
-  }
 
   /// 토큰 획득 완료 다이얼로그
   static void showTokenEarnedDialog(final BuildContext context, final int tokens) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: const Row(
           children: [
             Icon(Icons.stars, color: SeniorTheme.accentColor),
@@ -139,7 +124,7 @@ class PremiumWidgets {
   }) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: const Row(
           children: [
             Icon(Icons.bug_report, color: SeniorTheme.accentColor),
@@ -189,7 +174,7 @@ class PremiumWidgets {
   static void showSimplePurchaseDialog(final BuildContext context) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: const Row(
           children: [
             Icon(Icons.diamond, color: SeniorTheme.accentColor),

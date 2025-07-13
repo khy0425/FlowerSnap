@@ -11,6 +11,7 @@ part 'analysis_result.g.dart';
 @JsonSerializable()
 @HiveType(typeId: 1)
 @immutable
+// ignore: must_be_immutable
 class AnalysisResult extends HiveObject {
   @JsonKey(name: 'id')
   @HiveField(0)

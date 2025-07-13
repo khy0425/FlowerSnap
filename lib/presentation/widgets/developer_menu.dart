@@ -70,7 +70,7 @@ class DeveloperMenu {
                   await Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => FlowerAnalysisResultScreen(
+                      builder: (final context) => FlowerAnalysisResultScreen(
                         imageFile: imageFile,
                         analysisResult: result,
                         isLowConfidence: result.confidence < 0.7,
@@ -93,18 +93,18 @@ class DeveloperMenu {
   }
 
   /// 이미지 선택 공통 메서드
-  static Future<XFile?> _pickImage(ImageSource source) async {
+  static Future<XFile?> _pickImage(final ImageSource source) async {
     final picker = ImagePicker();
     return await picker.pickImage(
       source: source,
       maxWidth: 1024,
       maxHeight: 1024,
-      imageQuality: 85,
+      imageQuality: 80,
     );
   }
 
   /// 간단한 테스트 결과 생성
-  static AnalysisResult _generateSimpleTestResult(File imageFile) {
+  static AnalysisResult _generateSimpleTestResult(final File imageFile) {
     final testPlants = [
       {
         'name': '몬스테라 델리시오사',
@@ -144,9 +144,7 @@ class DeveloperMenu {
       apiProvider: 'test',
       isPremiumResult: false,
       category: 'plant',
-      rarity: 1,
       additionalInfo: const {},
-      detectionResults: const [],
     );
   }
 } 

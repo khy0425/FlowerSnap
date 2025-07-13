@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flora_snap/data/models/analysis_result.dart';
 import 'package:flora_snap/data/models/bounding_box.dart';
 import 'package:flora_snap/data/models/detection_result.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AnalysisResult Model Tests', () {
@@ -31,7 +31,7 @@ void main() {
         description: '붉은 장미 꽃잎이 아름다운 꽃입니다.',
         alternativeNames: const ['빨간 장미', 'Red Rose'],
         imageUrl: 'test_image.jpg',
-        analyzedAt: DateTime(2024, 1, 1),
+        analyzedAt: DateTime(2024, 1, 2),
         apiProvider: 'test',
         isPremiumResult: true,
         category: 'flower',
@@ -54,14 +54,13 @@ void main() {
           name: '해바라기',
           scientificName: 'Helianthus annuus',
           confidence: 0.92,
-          description: '노란색 꽃잎을 가진 해바라기입니다.',
-          alternativeNames: const [],
-          imageUrl: '',
-          analyzedAt: DateTime.now(),
-          apiProvider: 'plantid',
+          description: '큰 노란 꽃잎을 가진 해바라기입니다.',
+          alternativeNames: const ['Sunflower'],
+          imageUrl: 'sunflower.jpg',
+          analyzedAt: DateTime(2024, 1, 2),
+          apiProvider: 'test',
           isPremiumResult: false,
           category: 'flower',
-          rarity: 1,
         );
 
         expect(result.id, equals('test_002'));
@@ -82,7 +81,6 @@ void main() {
           apiProvider: 'google_vision',
           isPremiumResult: false,
           category: 'flower',
-          rarity: 2,
         );
 
         expect(result.id, equals('test_003'));
@@ -102,7 +100,7 @@ void main() {
           description: '붉은 장미 꽃잎이 아름다운 꽃입니다.',
           alternativeNames: const ['빨간 장미', 'Red Rose'],
           imageUrl: 'test_image.jpg',
-          analyzedAt: DateTime(2024, 1, 1),
+          analyzedAt: DateTime(2024, 1, 3),
           apiProvider: 'test',
           isPremiumResult: true,
           category: 'flower',
@@ -127,8 +125,7 @@ void main() {
           analyzedAt: DateTime.now(),
           apiProvider: 'test',
           isPremiumResult: false,
-          category: 'plant',
-          rarity: 1,
+          category: 'flower',
         );
 
         expect(result1, isNot(equals(result2)));
@@ -142,7 +139,7 @@ void main() {
         expect(json['id'], equals('test_001'));
         expect(json['name'], equals('장미'));
         expect(json['confidence'], equals(0.95));
-        expect(json['detection_results'], isA<List>());
+        expect(json['detection_results'], isA<List<Object?>>());
       });
 
       test('should deserialize from JSON correctly', () {
@@ -169,7 +166,6 @@ void main() {
           apiProvider: 'test',
           isPremiumResult: false,
           category: 'flower',
-          rarity: 1,
         );
 
         expect(result.confidence, equals(0.0));
@@ -189,7 +185,6 @@ void main() {
           apiProvider: 'test',
           isPremiumResult: false,
           category: 'flower',
-          rarity: 1,
         );
 
         expect(result.confidence, equals(1.0));
@@ -198,10 +193,10 @@ void main() {
     });
     
     group('Deprecated Access Tests', () {
-      test('should access boundingBoxes via deprecated getter', () {
-        final boxes = testResult.boundingBoxes;
-        expect(boxes, isA<List<BoundingBox>>());
-        expect(boxes.length, equals(testResult.detectionResults.length));
+      test('should access detectionResults properly', () {
+        final detections = testResult.detectionResults;
+        expect(detections, isA<List<DetectionResult>>());
+        expect(detections.length, greaterThan(0));
       });
 
       test('should have correct basic properties', () {
@@ -223,7 +218,6 @@ void main() {
           apiProvider: 'test',
           isPremiumResult: false,
           category: 'flower',
-          rarity: 1,
         );
 
         // Since isRecent method doesn't exist, we just check it was created recently

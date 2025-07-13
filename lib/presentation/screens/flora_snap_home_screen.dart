@@ -95,6 +95,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
   
   @override
+  // ignore: prefer_expression_function_bodies
   Widget build(final BuildContext context) {
     return Scaffold(
       backgroundColor: SeniorTheme.backgroundColor,
@@ -230,11 +231,13 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 섹션 헤더 위젯
+  // ignore: prefer_expression_function_bodies
   Widget _buildSectionHeader(
     final BuildContext context, {
     required final IconData icon,
     required final String title,
     required final Color color,
+  // ignore: prefer_expression_function_bodies
   }) {
     return Row(
       children: [
@@ -265,6 +268,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 꽃 노트 미리보기
+  // ignore: prefer_expression_function_bodies
   Widget _buildFlowerNotePreview(final BuildContext context, final List<dynamic> history) {
     return Container(
       padding: const EdgeInsets.all(SeniorConstants.spacing),
@@ -297,6 +301,7 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
   }
 
   /// 하단 섹션 (프리미엄 안내 + 광고)
+  // ignore: prefer_expression_function_bodies
   Widget _buildBottomSection(final BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,

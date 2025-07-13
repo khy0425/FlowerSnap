@@ -111,8 +111,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
 
   @override
-  Widget build(final BuildContext context) {
-    return Scaffold(
+  Widget build(final BuildContext context) => Scaffold(
       backgroundColor: SeniorTheme.backgroundColor,
       body: Container(
         decoration: SeniorTheme.gradientBackground,
@@ -168,11 +167,9 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
         ),
       ),
     );
-  }
   
   /// 앱바 커스텀 빌드
-  Widget _buildAppBar(final BuildContext context) {
-    return Container(
+  Widget _buildAppBar(final BuildContext context) => Container(
       decoration: const BoxDecoration(
         color: SeniorTheme.primaryColor,
         boxShadow: [
@@ -190,39 +187,33 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
         ),
         child: Row(
           children: [
+            // 뒤로가기 버튼
             IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: SeniorConstants.iconSizeLarge,
-              ),
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              tooltip: '뒤로가기',
             ),
             
+            // 타이틀
             Expanded(
               child: Text(
                 AppLocalizations.of(context).analysisResult,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             
-            // 분석권 개수 표시
-            AnimatedContainer(
-              duration: SeniorConstants.animationDurationFast,
-              child: _buildTokenCountWidget(context),
-            ),
+            // 분석권 개수
+            _buildTokenCountWidget(context),
           ],
         ),
       ),
     );
-  }
   
   /// 분석권 개수 위젯
-  Widget _buildTokenCountWidget(final BuildContext context) {
-    return Container(
+  Widget _buildTokenCountWidget(final BuildContext context) => Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SeniorConstants.spacing,
         vertical: SeniorConstants.spacingSmall,
@@ -254,7 +245,6 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
         ],
       ),
     );
-  }
   
   /// 결과 이미지 섹션 (바운딩 박스 포함)
   Widget _buildFlowerImageWithBoundingBox(final BuildContext context) {
@@ -382,15 +372,10 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 바운딩 박스 신뢰도에 따른 색상
-  Color _getBoundingBoxColor(final double confidence) {
-    if (confidence >= 0.8) {
-      return SeniorTheme.successColor;
-    } else if (confidence >= 0.6) {
-      return SeniorTheme.warningColor;
-    } else {
-      return SeniorTheme.errorColor;
-    }
-  }
+  Color _getBoundingBoxColor(final double confidence) =>
+      confidence >= 0.8 ? SeniorTheme.successColor :
+      confidence >= 0.6 ? SeniorTheme.warningColor :
+      SeniorTheme.errorColor;
   
   /// 분석 결과 카드
   Widget _buildAnalysisResultCard(final BuildContext context) {
@@ -507,8 +492,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 식물이 아닌 경우 카드
-  Widget _buildNotFlowerCard(final BuildContext context, final AnalysisResult result) {
-    return Container(
+  Widget _buildNotFlowerCard(final BuildContext context, final AnalysisResult result) => Container(
       decoration: SeniorTheme.specialCardDecoration(SeniorTheme.warningColor),
       child: Padding(
         padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
@@ -532,159 +516,52 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                 ),
                 const SizedBox(width: SeniorConstants.spacing),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "식물이 아닙니다",
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: SeniorTheme.warningColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "식물이 아닌 것으로 인식되었습니다",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: SeniorTheme.textSecondaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: SeniorConstants.spacingLarge),
-            
-            // 식물이 아닌 이유 설명
-            Container(
-              padding: const EdgeInsets.all(SeniorConstants.spacing),
-              decoration: BoxDecoration(
-                color: SeniorTheme.warningColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "분석 결과",
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  child: Text(
+                    '식물이 아닐 수 있어요',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: SeniorTheme.warningColor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: SeniorConstants.spacingSmall),
-                  Text(
-                    result.notFlowerReason,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: SeniorConstants.spacingLarge),
-            
-            // 인식된 결과 표시
-            if (result.name.isNotEmpty) ...[
-              Text(
-                "인식된 결과",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: SeniorConstants.spacingSmall),
-              Text(
-                result.name,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: SeniorTheme.textSecondaryColor,
-                ),
-              ),
-              if (result.scientificName.isNotEmpty) ...[
-                const SizedBox(height: SeniorConstants.spacingXSmall),
-                Text(
-                  result.scientificName,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: SeniorTheme.textSecondaryColor,
-                  ),
                 ),
               ],
-              const SizedBox(height: SeniorConstants.spacingLarge),
-            ],
+            ),
             
-            // 신뢰도 표시
-            _buildConfidenceCard(context, result.confidence),
-            
-            const SizedBox(height: SeniorConstants.spacingLarge),
+            const SizedBox(height: SeniorConstants.spacing),
             
             // 안내 메시지
-            Container(
-              padding: const EdgeInsets.all(SeniorConstants.spacing),
-              decoration: BoxDecoration(
-                color: SeniorTheme.infoColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
-                border: Border.all(color: SeniorTheme.infoColor, width: 1),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.lightbulb_outline,
-                    color: SeniorTheme.infoColor,
-                    size: SeniorConstants.iconSizeMedium,
-                  ),
-                  const SizedBox(width: SeniorConstants.spacing),
-                  Expanded(
-                    child: Text(
-                      "식물의 잎이나 꽃 부분을 다시 찍어보시거나, 정밀 분석을 통해 더 정확한 결과를 확인해보세요.",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: SeniorTheme.infoColor,
-                      ),
-                    ),
-                  ),
-                ],
+            Text(
+              '분석 결과 식물이 아닌 것으로 보입니다. 다른 사진을 시도해 보세요.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: SeniorTheme.textPrimaryColor,
               ),
             ),
             
             const SizedBox(height: SeniorConstants.spacingLarge),
             
-            // 액션 버튼들
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.camera_alt),
-                                          label: const Text("다시 찍기"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SeniorTheme.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.all(SeniorConstants.spacing),
-                    ),
+            // 다시 시도 버튼
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.camera_alt),
+                label: const Text('다른 사진으로 다시 시도'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: SeniorTheme.warningColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: SeniorConstants.spacing,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
                   ),
                 ),
-                const SizedBox(width: SeniorConstants.spacing),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _tokenCount > 0 || !_isLoadingRewardAd
-                        ? () => _showPreciseAnalysisForNonFlower(context)
-                        : null,
-                    icon: const Icon(Icons.search),
-                                          label: const Text("정밀 분석"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SeniorTheme.warningColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.all(SeniorConstants.spacing),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
       ),
     );
-  }
   
   /// 신뢰도 카드 위젯
   Widget _buildConfidenceCard(final BuildContext context, final double confidence) {
@@ -740,6 +617,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 정밀 분석 권장 카드
+  // ignore: prefer_expression_function_bodies
   Widget _buildPreciseAnalysisCard(final BuildContext context) {
     return Container(
       decoration: SeniorTheme.specialCardDecoration(SeniorTheme.warningColor),
@@ -808,6 +686,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 정밀 분석 버튼들
+  // ignore: prefer_expression_function_bodies
   Widget _buildPreciseAnalysisButtons(final BuildContext context) {
     return Column(
       children: [
@@ -968,161 +847,77 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 로딩 위젯
-  Widget _buildLoadingWidget(final BuildContext context, final String message) {
-    return Container(
+  Widget _buildLoadingWidget(final BuildContext context, final String message) => Container(
       padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
+      decoration: SeniorTheme.cardDecoration,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const CircularProgressIndicator(
-            strokeWidth: 3,
-            valueColor: AlwaysStoppedAnimation<Color>(SeniorTheme.primaryColor),
+            color: SeniorTheme.primaryColor,
           ),
           const SizedBox(height: SeniorConstants.spacing),
           Text(
             message,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: SeniorTheme.primaryColor,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: SeniorTheme.textSecondaryColor,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
-  }
-  
+
   /// 하단 버튼들
-  Widget _buildBottomButtons(final BuildContext context) {
-    return Column(
-      children: [
-        // 뒤로가기 버튼
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: () => _saveToFlowerNote(context),
-            icon: const Icon(Icons.save),
-                            label: Text(AppLocalizations.of(context).saveToFlowerNote),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: SeniorTheme.primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.all(SeniorConstants.spacing),
-            ),
-          ),
-        ),
-        
-        const SizedBox(height: SeniorConstants.spacing),
-        
-        // 다시 찍기 버튼
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.camera_alt),
-                            label: Text(AppLocalizations.of(context).takeAnotherPhoto),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: SeniorTheme.primaryColor,
-              side: const BorderSide(color: SeniorTheme.primaryColor, width: 2),
-              padding: const EdgeInsets.all(SeniorConstants.spacing),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-  
-  /// 꽃이 아닌 경우의 정밀 분석 안내
-  void _showPreciseAnalysisForNonFlower(final BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (final BuildContext dialogContext) => AlertDialog(
-        title: Row(
-          children: const <Widget>[
-            Icon(
-              Icons.search,
-              color: SeniorTheme.warningColor,
-              size: SeniorConstants.iconSizeLarge,
-            ),
-            SizedBox(width: SeniorConstants.spacing),
-            Text('정밀 분석'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '현재 무료 분석에서는 꽃이 아닌 것으로 인식했습니다.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: SeniorConstants.spacing),
-            Text(
-              '정밀 분석을 통해 더 정확한 결과를 확인해보시겠습니까?',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: SeniorConstants.spacing),
-            Container(
-              padding: const EdgeInsets.all(SeniorConstants.spacing),
-              decoration: BoxDecoration(
-                color: SeniorTheme.infoColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusSmall),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: SeniorTheme.infoColor,
-                    size: SeniorConstants.iconSizeSmall,
-                  ),
-                  const SizedBox(width: SeniorConstants.spacingSmall),
-                  Expanded(
-                    child: Text(
-                      '정밀 분석은 AI 기술로 더 정확한 식물 인식을 제공합니다.',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: SeniorTheme.infoColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('취소'),
-          ),
-          if (_tokenCount > 0)
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _performPreciseAnalysis(useToken: true);
-              },
-              icon: const Icon(Icons.stars),
-                                  label: Text('분석권 사용 ($_tokenCount개)'),
+  Widget _buildBottomButtons(final BuildContext context) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: SeniorConstants.spacing),
+      child: Column(
+        children: [
+          // 꽃 노트에 저장
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _saveToFlowerNote,
+              icon: const Icon(Icons.bookmark_add),
+              label: Text(AppLocalizations.of(context).saveToFlowerNote),
               style: ElevatedButton.styleFrom(
                 backgroundColor: SeniorTheme.primaryColor,
                 foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  vertical: SeniorConstants.spacing,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
+                ),
               ),
             ),
-          if (_tokenCount == 0)
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _watchRewardAd();
-              },
-              icon: const Icon(Icons.play_circle_outline),
-                                  label: const Text('광고 보고 분석하기'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: SeniorTheme.successColor,
-                foregroundColor: Colors.white,
+          ),
+          
+          const SizedBox(height: SeniorConstants.spacing),
+          
+          // 다른 사진 촬영
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.camera_alt),
+              label: Text(AppLocalizations.of(context).takeAnotherPhoto),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: SeniorTheme.primaryColor,
+                side: const BorderSide(color: SeniorTheme.primaryColor),
+                padding: const EdgeInsets.symmetric(
+                  vertical: SeniorConstants.spacing,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
+                ),
               ),
             ),
+          ),
         ],
       ),
     );
-  }
-
+  
   /// 리워드 광고 시청
   Future<void> _watchRewardAd() async {
     if (!_rewardAdService.isAdLoaded) {
@@ -1227,10 +1022,10 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 위젯 트리 해제
-  Future<void> _saveToFlowerNote(final BuildContext passedContext) async {
+  Future<void> _saveToFlowerNote() async {
     if (!mounted) return;
     
-    final localizations = AppLocalizations.of(passedContext);
+    final localizations = AppLocalizations.of(context);
     
     try {
               // 정밀 분석 결과가 있으면 그것을 우선, 기본 결과는 참고용
@@ -1243,8 +1038,8 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
         _showSnackBar(localizations.savedToFlowerNote);
         
         // 메인 화면으로 돌아가기
-        if (mounted && passedContext.mounted) {
-          Navigator.popUntil(passedContext, (final route) => route.isFirst);
+        if (mounted && context.mounted) {
+          Navigator.popUntil(context, (final route) => route.isFirst);
         }
       }
       

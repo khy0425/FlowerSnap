@@ -327,11 +327,10 @@ class SeniorTheme {
   );
   
   /// 신뢰도 색상 가져오기
-  static Color getConfidenceColor(final double confidence) {
-    if (confidence >= 0.8) return confidenceHighColor;
-    if (confidence >= 0.6) return confidenceMediumColor;
-    return confidenceLowColor;
-  }
+  static Color getConfidenceColor(final double confidence) =>
+      confidence >= 0.8 ? confidenceHighColor :
+      confidence >= 0.6 ? confidenceMediumColor :
+      confidenceLowColor;
   
   /// 신뢰도 아이콘 가져오기
   static IconData getConfidenceIcon(final double confidence) {

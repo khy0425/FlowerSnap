@@ -43,7 +43,7 @@ class CollectionTab extends ConsumerWidget {
         Expanded(
           child: ListView.builder(
             itemCount: analysisHistory.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (final context, final index) {
               final result = analysisHistory[index];
               return _PlantResultCard(result: result);
             },
@@ -183,7 +183,7 @@ class _PlantResultCard extends ConsumerWidget {
                 Row(
                   children: List.generate(
                     5,
-                    (index) => Icon(
+                    (final index) => Icon(
                       index < result.rarity ? Icons.star : Icons.star_border,
                       color: Colors.amber,
                       size: 12,
@@ -226,18 +226,17 @@ class _PlantResultCard extends ConsumerWidget {
     }
   }
 
-  Color _getConfidenceColor(final double confidence) {
-    if (confidence >= 0.9) return Colors.green;
-    if (confidence >= 0.8) return Colors.lightGreen;
-    if (confidence >= 0.6) return Colors.orange;
-    if (confidence >= 0.4) return Colors.deepOrange;
-    return Colors.red;
-  }
+  Color _getConfidenceColor(final double confidence) =>
+      confidence >= 0.9 ? Colors.green :
+      confidence >= 0.8 ? Colors.lightGreen :
+      confidence >= 0.6 ? Colors.orange :
+      confidence >= 0.4 ? Colors.deepOrange :
+      Colors.red;
 
   void _showDetailDialog(final BuildContext context, final AnalysisResult result) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: Text(result.name),
         content: SingleChildScrollView(
           child: Column(
@@ -301,7 +300,7 @@ class _PlantResultCard extends ConsumerWidget {
                   const Text('희귀도: '),
                   ...List.generate(
                     5,
-                    (index) => Icon(
+                    (final index) => Icon(
                       index < result.rarity ? Icons.star : Icons.star_border,
                       color: Colors.amber,
                       size: 16,
@@ -322,8 +321,7 @@ class _PlantResultCard extends ConsumerWidget {
     );
   }
 
-  String _formatDateTime(final DateTime dateTime) {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
-           '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-  }
+  String _formatDateTime(final DateTime dateTime) => 
+      '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
+      '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 }

@@ -10,6 +10,7 @@ part 'detection_result.g.dart';
 @JsonSerializable()
 @HiveType(typeId: 3)
 @immutable
+// ignore: must_be_immutable
 class DetectionResult extends HiveObject {
   /// 경계 상자 정보
   @JsonKey(name: 'bounding_box')

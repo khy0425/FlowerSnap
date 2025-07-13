@@ -8,6 +8,7 @@ part 'api_token.g.dart';
 @JsonSerializable()
 @HiveType(typeId: 0)
 @immutable
+// ignore: must_be_immutable
 class ApiToken extends HiveObject {
   @JsonKey(name: 'provider')
   @HiveField(0)
