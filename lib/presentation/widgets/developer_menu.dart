@@ -11,9 +11,9 @@ import '../screens/flower_analysis_result_screen.dart';
 class DeveloperMenu {
   /// 개발자 메뉴 표시 (디버그 모드에서만)
   static void showDeveloperMenu(
-    BuildContext context, {
-    required AnalysisTokenService tokenService,
-    required VoidCallback onTokenCountUpdate,
+    final BuildContext context, {
+    required final AnalysisTokenService tokenService,
+    required final VoidCallback onTokenCountUpdate,
   }) {
     showDialog<void>(
       context: context,

@@ -7,11 +7,11 @@ import '../../generated/l10n/app_localizations.dart';
 class HomeScreenWidgets {
   /// 앱바 커스텀 빌드
   static Widget buildAppBar(
-    BuildContext context, {
-    required int tokenCount,
-    required VoidCallback onDeveloperMenu,
-    required VoidCallback onSettings,
-    required bool showDeveloperMenu,
+    final BuildContext context, {
+    required final int tokenCount,
+    required final VoidCallback onDeveloperMenu,
+    required final VoidCallback onSettings,
+    required final bool showDeveloperMenu,
   }) {
     return Container(
       decoration: const BoxDecoration(
@@ -79,7 +79,7 @@ class HomeScreenWidgets {
   }
 
   /// 분석 토큰 개수 위젯
-  static Widget _buildTokenCountWidget(BuildContext context, int tokenCount) {
+  static Widget _buildTokenCountWidget(final BuildContext context, final int tokenCount) {
     return AnimatedContainer(
       duration: SeniorConstants.animationDurationFast,
       padding: const EdgeInsets.symmetric(
@@ -117,10 +117,10 @@ class HomeScreenWidgets {
 
   /// 메인 카메라 섹션
   static Widget buildMainCameraSection(
-    BuildContext context, {
-    required bool isLoading,
-    required VoidCallback onTakePhoto,
-    required VoidCallback onSelectFromGallery,
+    final BuildContext context, {
+    required final bool isLoading,
+    required final VoidCallback onTakePhoto,
+    required final VoidCallback onSelectFromGallery,
   }) {
     return Container(
       decoration: SeniorTheme.cardDecoration,
@@ -200,12 +200,12 @@ class HomeScreenWidgets {
 
   /// 카메라 버튼 위젯
   static Widget _buildCameraButton(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onPressed,
-    required bool isLoading,
+    final BuildContext context, {
+    required final IconData icon,
+    required final String label,
+    required final Color color,
+    required final VoidCallback onPressed,
+    required final bool isLoading,
   }) {
     return AnimatedContainer(
       duration: SeniorConstants.animationDurationFast,
@@ -240,8 +240,8 @@ class HomeScreenWidgets {
 
   /// 오늘 배운 꽃 섹션
   static Widget buildTodayFlowerSection(
-    BuildContext context, 
-    List<AnalysisResult> analysisHistory,
+    final BuildContext context, 
+    final List<AnalysisResult> analysisHistory,
   ) {
     return Container(
       decoration: SeniorTheme.cardDecoration,
@@ -274,10 +274,10 @@ class HomeScreenWidgets {
 
   /// 섹션 헤더 위젯
   static Widget _buildSectionHeader(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required Color color,
+    final BuildContext context, {
+    required final IconData icon,
+    required final String title,
+    required final Color color,
   }) {
     return Row(
       children: [
@@ -309,10 +309,10 @@ class HomeScreenWidgets {
 
   /// 빈 상태 위젯
   static Widget _buildEmptyState(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
+    final BuildContext context, {
+    required final IconData icon,
+    required final String title,
+    required final String subtitle,
   }) {
     return Container(
       padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
@@ -343,7 +343,7 @@ class HomeScreenWidgets {
   }
 
   /// 오늘 배운 꽃 카드
-  static Widget _buildTodayFlowerCard(BuildContext context, AnalysisResult flower) {
+  static Widget _buildTodayFlowerCard(final BuildContext context, final AnalysisResult flower) {
     return Container(
       decoration: SeniorTheme.specialCardDecoration(SeniorTheme.accentColor),
       child: Padding(
@@ -402,7 +402,7 @@ class HomeScreenWidgets {
   }
 
   /// 신뢰도 칩 위젯
-  static Widget _buildConfidenceChip(BuildContext context, double confidence) {
+  static Widget _buildConfidenceChip(final BuildContext context, final double confidence) {
     final color = SeniorTheme.getConfidenceColor(confidence);
     final icon = SeniorTheme.getConfidenceIcon(confidence);
     
@@ -434,7 +434,7 @@ class HomeScreenWidgets {
   }
 
   /// 환영 메시지
-  static Widget buildWelcomeMessage(BuildContext context) {
+  static Widget buildWelcomeMessage(final BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
       decoration: BoxDecoration(

@@ -6,9 +6,9 @@ import '../../data/services/analysis_token_service.dart';
 class PremiumWidgets {
   /// 프리미엄 기능 안내 섹션
   static Widget buildPremiumPromoSection(
-    BuildContext context, {
-    required VoidCallback onRewardAd,
-    required VoidCallback onPurchase,
+    final BuildContext context, {
+    required final VoidCallback onRewardAd,
+    required final VoidCallback onPurchase,
   }) {
     return Container(
       margin: const EdgeInsets.all(SeniorConstants.spacing),
@@ -109,7 +109,7 @@ class PremiumWidgets {
   }
 
   /// 토큰 획득 완료 다이얼로그
-  static void showTokenEarnedDialog(BuildContext context, int tokens) {
+  static void showTokenEarnedDialog(final BuildContext context, final int tokens) {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
@@ -133,9 +133,9 @@ class PremiumWidgets {
 
   /// 테스트용 토큰 지급 다이얼로그
   static void showTestTokenDialog(
-    BuildContext context, {
-    required AnalysisTokenService tokenService,
-    required VoidCallback onTokenCountUpdate,
+    final BuildContext context, {
+    required final AnalysisTokenService tokenService,
+    required final VoidCallback onTokenCountUpdate,
   }) {
     showDialog<void>(
       context: context,
@@ -186,7 +186,7 @@ class PremiumWidgets {
   }
 
   /// 간단한 프리미엄 구매 다이얼로그
-  static void showSimplePurchaseDialog(BuildContext context) {
+  static void showSimplePurchaseDialog(final BuildContext context) {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(

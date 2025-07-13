@@ -238,7 +238,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.stars,
             color: SeniorTheme.tokenColor,
             size: SeniorConstants.iconSizeMedium,
@@ -471,7 +471,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             _buildConfidenceCard(context, result.confidence),
             
             // 설명
-            if (result.description != null) ...[
+            if (result.description.isNotEmpty) ...[
               const SizedBox(height: SeniorConstants.spacingLarge),
               Container(
                 padding: const EdgeInsets.all(SeniorConstants.spacing),
@@ -490,7 +490,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     ),
                     const SizedBox(height: SeniorConstants.spacingSmall),
                     Text(
-                      result.description!,
+                      result.description,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
@@ -625,7 +625,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.lightbulb_outline,
                     color: SeniorTheme.infoColor,
                     size: SeniorConstants.iconSizeMedium,
@@ -915,10 +915,10 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
               ),
             ),
             
-            if (_preciseResult!.scientificName != null) ...[
+            if (_preciseResult!.scientificName.isNotEmpty) ...[
               const SizedBox(height: SeniorConstants.spacingSmall),
               Text(
-                _preciseResult!.scientificName!,
+                _preciseResult!.scientificName,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontStyle: FontStyle.italic,
                   color: SeniorTheme.textSecondaryColor,
@@ -931,7 +931,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
             // 신뢰도
             _buildConfidenceCard(context, _preciseResult!.confidence),
             
-            if (_preciseResult!.description != null) ...[
+            if (_preciseResult!.description.isNotEmpty) ...[
               const SizedBox(height: SeniorConstants.spacingLarge),
               Container(
                 padding: const EdgeInsets.all(SeniorConstants.spacing),
@@ -951,7 +951,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                     ),
                     const SizedBox(height: SeniorConstants.spacingSmall),
                     Text(
-                      _preciseResult!.description!,
+                      _preciseResult!.description,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
@@ -1031,20 +1031,20 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
       context: context,
       builder: (final BuildContext dialogContext) => AlertDialog(
         title: Row(
-          children: [
-            const Icon(
+          children: const <Widget>[
+            Icon(
               Icons.search,
               color: SeniorTheme.warningColor,
               size: SeniorConstants.iconSizeLarge,
             ),
-            const SizedBox(width: SeniorConstants.spacing),
-                            const Text('정밀 분석'),
+            SizedBox(width: SeniorConstants.spacing),
+            Text('정밀 분석'),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Text(
               '현재 무료 분석에서는 꽃이 아닌 것으로 인식했습니다.',
               style: Theme.of(context).textTheme.bodyMedium,
@@ -1065,7 +1065,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.info_outline,
                     color: SeniorTheme.infoColor,
                     size: SeniorConstants.iconSizeSmall,
@@ -1206,7 +1206,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
         scientificName: 'Scientificus precisus',
         confidence: 0.95,
         description: '정밀 분석을 통해 더욱 더 정확한 식물 정보입니다. 이 꽃은 특별한 특징을 가지고 있습니다.',
-        alternativeNames: ['정밀 분석 꽃', '프리미엄 꽃'],
+        alternativeNames: const ['정밀 분석 꽃', '프리미엄 꽃'],
         imageUrl: '',
         analyzedAt: DateTime.now(),
         apiProvider: 'plant_id',

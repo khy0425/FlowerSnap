@@ -300,8 +300,8 @@ class SeniorTheme {
   static BoxDecoration get cardDecoration => BoxDecoration(
     color: cardBackgroundColor,
     borderRadius: BorderRadius.circular(16),
-    boxShadow: [
-      const BoxShadow(
+    boxShadow: const [
+      BoxShadow(
         color: cardElevationColor,
         blurRadius: 12,
         offset: Offset(0, 4),
