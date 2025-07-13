@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/senior_theme.dart';
 import '../../data/models/bounding_box.dart';
+import '../../data/models/detection_result.dart';
 
 /// 이미지 위에 바운딩 박스를 그리는 위젯
 class ImageWithBoundingBox extends StatelessWidget {
   final File imageFile;
-  final List<BoundingBox> boundingBoxes;
+  final List<DetectionResult> detectionResults;
   final double? width;
   final double? height;
   final BoxFit fit;
@@ -15,7 +16,7 @@ class ImageWithBoundingBox extends StatelessWidget {
   const ImageWithBoundingBox({
     super.key,
     required this.imageFile,
-    required this.boundingBoxes,
+    required this.detectionResults,
     this.width,
     this.height,
     this.fit = BoxFit.contain,

@@ -347,7 +347,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                       ),
                     ),
                     const SizedBox(height: SeniorConstants.spacingSmall),
-                    ...result.boundingBoxes.asMap().entries.map((entry) {
+                    ...result.detectionResults.asMap().entries.map((entry) {
                       final index = entry.key;
                       final box = entry.value;
                       return Padding(

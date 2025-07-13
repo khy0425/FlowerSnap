@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 분석 토큰 관리 서비스
 class AnalysisTokenService {
@@ -30,46 +30,33 @@ class AnalysisTokenService {
   /// 토큰 사용 (차감)
   Future<bool> useToken() async {
     final currentCount = await getTokenCount();
-    
-    if (currentCount <= 0) {
-      _logger.w('❌ 사용 가능한 토큰이 없습니다');
+    if (currentCount > 0) {
+      await _setTokenCount(currentCount - 1);
+      _logger.i('💎 토큰 1개 사용됨. 남은 토큰: ${currentCount - 1}개');
+      return true;
+    } else {
+      _logger.w('💎 사용할 토큰이 없습니다');
       return false;
     }
-    
-    await _setTokenCount(currentCount - 1);
-    _logger.i('💎 토큰 1개 사용됨. 남은 토큰: ${currentCount - 1}개');
-    return true;
   }
 
-  /// 토큰 개수 설정
+  /// 토큰 개수 직접 설정 (테스트용)
   Future<void> _setTokenCount(final int count) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_tokenCountKey, count);
+    _logger.d('💎 토큰 개수 설정: $count개');
   }
 
-  /// 토큰 개수 수정 (내부 메서드)
-  Future<void> _modifyTokenCount(final int count) async {
-    if (count < 0) {
-      _logger.w('❌ 음수 토큰은 추가할 수 없습니다');
-      return;
-    }
-    
+  /// 토큰 개수 변경 (내부 메서드)
+  Future<void> _modifyTokenCount(final int delta) async {
     final currentCount = await getTokenCount();
-    final newCount = currentCount + count;
+    final newCount = (currentCount + delta).clamp(0, 999);
     await _setTokenCount(newCount);
     
-    _logger.i('💎 토큰 ${count}개 추가됨. 현재: ${newCount}개');
-  }
-
-  /// 토큰 개수 리셋 (디버그용)
-  Future<void> resetTokenCount() async {
-    await _setTokenCount(0);
-    _logger.i('💎 토큰 개수가 초기화되었습니다');
-  }
-
-  /// 특정 토큰 개수로 설정 (테스트용)
-  Future<void> setTokenCountForTesting(final int count) async {
-    await _setTokenCount(count);
-    _logger.d('🧪 테스트용 토큰 설정: ${count}개');
+    if (delta > 0) {
+      _logger.i('💎 토큰 $delta개 추가됨. 현재: $newCount개');
+    } else {
+      _logger.i('💎 토큰 ${-delta}개 차감됨. 현재: $newCount개');
+    }
   }
 } 

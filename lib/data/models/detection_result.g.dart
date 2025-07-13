@@ -1,46 +1,37 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'bounding_box.dart';
+part of 'detection_result.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class BoundingBoxAdapter extends TypeAdapter<BoundingBox> {
+class DetectionResultAdapter extends TypeAdapter<DetectionResult> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
-  BoundingBox read(BinaryReader reader) {
+  DetectionResult read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return BoundingBox(
-      x: fields[0] as double,
-      y: fields[1] as double,
-      width: fields[2] as double,
-      height: fields[3] as double,
-      confidence: fields[4] as double,
-      label: fields[5] as String,
+    return DetectionResult(
+      boundingBox: fields[0] as BoundingBox,
+      confidence: fields[1] as double,
+      label: fields[2] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, BoundingBox obj) {
+  void write(BinaryWriter writer, DetectionResult obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(0)
-      ..write(obj.x)
-      ..writeByte(1)
-      ..write(obj.y)
-      ..writeByte(2)
-      ..write(obj.width)
       ..writeByte(3)
-      ..write(obj.height)
-      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.boundingBox)
+      ..writeByte(1)
       ..write(obj.confidence)
-      ..writeByte(5)
+      ..writeByte(2)
       ..write(obj.label);
   }
 
@@ -50,7 +41,7 @@ class BoundingBoxAdapter extends TypeAdapter<BoundingBox> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BoundingBoxAdapter &&
+      other is DetectionResultAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -59,29 +50,26 @@ class BoundingBoxAdapter extends TypeAdapter<BoundingBox> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-BoundingBox _$BoundingBoxFromJson(Map<String, dynamic> json) => $checkedCreate(
-      'BoundingBox',
+DetectionResult _$DetectionResultFromJson(Map<String, dynamic> json) =>
+    $checkedCreate(
+      'DetectionResult',
       json,
       ($checkedConvert) {
-        final val = BoundingBox(
-          x: $checkedConvert('x', (v) => (v as num).toDouble()),
-          y: $checkedConvert('y', (v) => (v as num).toDouble()),
-          width: $checkedConvert('width', (v) => (v as num).toDouble()),
-          height: $checkedConvert('height', (v) => (v as num).toDouble()),
+        final val = DetectionResult(
+          boundingBox: $checkedConvert('bounding_box',
+              (v) => BoundingBox.fromJson(v as Map<String, dynamic>)),
           confidence:
               $checkedConvert('confidence', (v) => (v as num).toDouble()),
           label: $checkedConvert('label', (v) => v as String),
         );
         return val;
       },
+      fieldKeyMap: const {'boundingBox': 'bounding_box'},
     );
 
-Map<String, dynamic> _$BoundingBoxToJson(BoundingBox instance) =>
+Map<String, dynamic> _$DetectionResultToJson(DetectionResult instance) =>
     <String, dynamic>{
-      'x': instance.x,
-      'y': instance.y,
-      'width': instance.width,
-      'height': instance.height,
+      'bounding_box': instance.boundingBox.toJson(),
       'confidence': instance.confidence,
       'label': instance.label,
     };

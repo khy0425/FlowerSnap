@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:flora_snap/data/models/analysis_result.dart';
 import 'package:flora_snap/data/models/bounding_box.dart';
 
@@ -25,7 +24,7 @@ void main() {
           'color': 'red',
           'season': 'spring',
         },
-        boundingBoxes: const <BoundingBox>[
+        boundingBoxes: const [
           BoundingBox(left: 0.1, top: 0.1, width: 0.8, height: 0.8),
         ],
       );
@@ -54,15 +53,15 @@ void main() {
           scientificName: 'Test flower',
           confidence: 0.8,
           description: '테스트용 꽃입니다.',
-          alternativeNames: const <String>[],
+          alternativeNames: const [],
           imageUrl: '',
           analyzedAt: DateTime.now(),
           apiProvider: 'test',
           isPremiumResult: false,
           category: 'test',
           rarity: 1,
-          additionalInfo: const <String, dynamic>{},
-          boundingBoxes: const <BoundingBox>[],
+          additionalInfo: const {},
+          boundingBoxes: const [],
         );
         
         expect(result.alternativeNames, isEmpty);

@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'bounding_box.dart';
+import 'detection_result.dart';
 
 part 'analysis_result.g.dart';
 
@@ -63,10 +64,15 @@ class AnalysisResult extends HiveObject {
   @HiveField(12)
   final Map<String, dynamic>? additionalInfo;
 
-  /// 바운딩 박스 정보 (꽃의 위치 표시)
-  @JsonKey(name: 'bounding_boxes')
+  /// 객체 감지 결과 (꽃의 위치, 신뢰도, 레이블)
+  @JsonKey(name: 'detection_results')
   @HiveField(13)
-  final List<BoundingBox> boundingBoxes;
+  final List<DetectionResult> detectionResults;
+
+  /// 이전 버전 호환성을 위한 boundingBoxes 접근자
+  @deprecated
+  List<BoundingBox> get boundingBoxes =>
+      detectionResults.map((detection) => detection.boundingBox).toList();
 
   AnalysisResult({
     required this.id,
@@ -82,7 +88,7 @@ class AnalysisResult extends HiveObject {
     required this.category,
     this.rarity = 1,
     this.additionalInfo,
-    this.boundingBoxes = const <BoundingBox>[],
+    this.detectionResults = const <DetectionResult>[],
   });
 
   /// JSON 직렬화 팩토리

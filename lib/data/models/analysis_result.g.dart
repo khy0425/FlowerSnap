@@ -30,7 +30,7 @@ class AnalysisResultAdapter extends TypeAdapter<AnalysisResult> {
       category: fields[10] as String,
       rarity: fields[11] as int,
       additionalInfo: (fields[12] as Map?)?.cast<String, dynamic>(),
-      boundingBoxes: (fields[13] as List).cast<BoundingBox>(),
+      detectionResults: (fields[13] as List).cast<DetectionResult>(),
     );
   }
 
@@ -65,7 +65,7 @@ class AnalysisResultAdapter extends TypeAdapter<AnalysisResult> {
       ..writeByte(12)
       ..write(obj.additionalInfo)
       ..writeByte(13)
-      ..write(obj.boundingBoxes);
+      ..write(obj.detectionResults);
   }
 
   @override
@@ -108,14 +108,14 @@ AnalysisResult _$AnalysisResultFromJson(Map<String, dynamic> json) =>
           rarity: $checkedConvert('rarity', (v) => (v as num?)?.toInt() ?? 1),
           additionalInfo: $checkedConvert(
               'additional_info', (v) => v as Map<String, dynamic>?),
-          boundingBoxes: $checkedConvert(
-              'bounding_boxes',
+          detectionResults: $checkedConvert(
+              'detection_results',
               (v) =>
                   (v as List<dynamic>?)
                       ?.map((e) =>
-                          BoundingBox.fromJson(e as Map<String, dynamic>))
+                          DetectionResult.fromJson(e as Map<String, dynamic>))
                       .toList() ??
-                  const <BoundingBox>[]),
+                  const <DetectionResult>[]),
         );
         return val;
       },
@@ -127,7 +127,7 @@ AnalysisResult _$AnalysisResultFromJson(Map<String, dynamic> json) =>
         'apiProvider': 'api_provider',
         'isPremiumResult': 'is_premium_result',
         'additionalInfo': 'additional_info',
-        'boundingBoxes': 'bounding_boxes'
+        'detectionResults': 'detection_results'
       },
     );
 
@@ -146,5 +146,6 @@ Map<String, dynamic> _$AnalysisResultToJson(AnalysisResult instance) =>
       'category': instance.category,
       'rarity': instance.rarity,
       if (instance.additionalInfo case final value?) 'additional_info': value,
-      'bounding_boxes': instance.boundingBoxes.map((e) => e.toJson()).toList(),
+      'detection_results':
+          instance.detectionResults.map((e) => e.toJson()).toList(),
     };

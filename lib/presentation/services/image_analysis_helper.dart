@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 
 import '../../data/models/analysis_result.dart';
 import '../../data/models/bounding_box.dart';
+import '../../data/models/detection_result.dart';
 import '../../data/services/enhanced_plant_analysis_service.dart';
 import '../screens/flower_analysis_result_screen.dart';
 import '../screens/settings_screen.dart';
@@ -59,7 +60,11 @@ class ImageAnalysisHelper {
       _logger.i('🔍 고정밀 식물 분석 시작...');
       
       final analysisService = EnhancedPlantAnalysisService();
-      final result = await analysisService.analyzeWithHighPrecision(imageFile);
+      final result = await analysisService.analyzeImageEnhanced(await imageFile.readAsBytes());
+      
+      if (result == null) {
+        throw Exception('고정밀 분석에서 결과를 얻을 수 없습니다');
+      }
       
       _logger.i('✅ 고정밀 분석 완료: ${result.name} (정확도 ${(result.confidence * 100).toStringAsFixed(1)}%)');
       
@@ -151,7 +156,7 @@ class ImageAnalysisHelper {
 
   /// API 결과에 바운딩 박스 추가
   static AnalysisResult _addBoundingBoxesToResult(AnalysisResult result, File imageFile) {
-    final List<BoundingBox> boundingBoxes = [];
+    final List<DetectionResult> detectionResults = [];
     
     // 식물인 경우에만 바운딩 박스 생성
     if (result.isFlower && result.category == 'plant' && result.confidence > 0.5) {
@@ -162,12 +167,14 @@ class ImageAnalysisHelper {
       final width = 0.25 + (random % 40) / 100.0; // 0.25 ~ 0.65
       final height = 0.25 + (random % 45) / 100.0; // 0.25 ~ 0.70
       
-      boundingBoxes.add(
-        BoundingBox(
-          x: x,
-          y: y,
-          width: width,
-          height: height,
+      detectionResults.add(
+        DetectionResult(
+          boundingBox: BoundingBox(
+            left: x,
+            top: y,
+            width: width,
+            height: height,
+          ),
           confidence: result.confidence,
           label: result.name,
         ),
@@ -188,7 +195,7 @@ class ImageAnalysisHelper {
       category: result.category,
       rarity: result.rarity,
       additionalInfo: result.additionalInfo,
-      boundingBoxes: boundingBoxes,
+      detectionResults: detectionResults,
     );
   }
 } 

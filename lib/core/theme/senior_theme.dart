@@ -305,7 +305,6 @@ class SeniorTheme {
         color: cardElevationColor,
         blurRadius: 12,
         offset: Offset(0, 4),
-        spreadRadius: 0,
       ),
     ],
   );
@@ -323,7 +322,6 @@ class SeniorTheme {
         color: color.withValues(alpha: 0.1),
         blurRadius: 12,
         offset: const Offset(0, 4),
-        spreadRadius: 0,
       ),
     ],
   );

@@ -64,7 +64,7 @@ class EnhancedPlantAnalysisService {
         category: 'flower',
         rarity: 3,
         additionalInfo: const {'source': 'plantnet', 'method': 'visual_recognition'},
-        boundingBoxes: const [],
+        detectionResults: const [],
       );
     } catch (e) {
       _logger.w('PlantNet API 호출 실패: $e');
@@ -177,7 +177,7 @@ class EnhancedPlantAnalysisService {
         'individual_confidences': verifiedResults.map((final r) => r.confidence).toList(),
         'result_count': verifiedResults.length,
       },
-      boundingBoxes: verifiedResults.first.boundingBoxes,
+      detectionResults: verifiedResults.first.detectionResults,
     );
   }
   
