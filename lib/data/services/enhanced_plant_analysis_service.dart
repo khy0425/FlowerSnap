@@ -11,9 +11,7 @@ import '../models/analysis_result.dart';
 class EnhancedPlantAnalysisService {
   final Logger _logger = Logger();
   
-  // 신뢰도 임계값
-  static const double _confidenceThreshold = 0.85;
-  static const double _ensembleWeightThreshold = 0.7;
+  // 신뢰도 임계값 (현재 미사용이지만 향후 앙상블 로직 확장 시 활용 예정)
   
   /// 향상된 식물 분석 (다중 API 앙상블)
   Future<AnalysisResult?> analyzeImageEnhanced(final Uint8List imageBytes) async {
@@ -25,7 +23,7 @@ class EnhancedPlantAnalysisService {
         _analyzePlantNet(imageBytes),
         _analyzePlantId(imageBytes),
         _analyzeGoogleVision(imageBytes),
-      ], eagerError: false);
+      ]);
       
       // null이 아닌 결과만 필터링
       final validResults = results.where((final result) => result != null).cast<AnalysisResult>().toList();
@@ -64,7 +62,6 @@ class EnhancedPlantAnalysisService {
         category: 'flower',
         rarity: 3,
         additionalInfo: const {'source': 'plantnet', 'method': 'visual_recognition'},
-        detectionResults: const [],
       );
     } catch (e) {
       _logger.w('PlantNet API 호출 실패: $e');
@@ -91,7 +88,6 @@ class EnhancedPlantAnalysisService {
         category: 'flower',
         rarity: 4,
         additionalInfo: const {'source': 'plantid', 'method': 'deep_learning'},
-        detectionResults: const [],
       );
     } catch (e) {
       _logger.w('PlantId API 호출 실패: $e');
@@ -281,15 +277,5 @@ class EnhancedPlantAnalysisService {
     return averageRarity.round().clamp(1, 5);
   }
   
-  /// 이미지 전처리 (향후 확장용)
-  Future<Uint8List> _preprocessImage(final Uint8List imageBytes) async {
-    // 현재는 원본 반환, 향후 리사이징/정규화 등 추가 가능
-    return imageBytes;
-  }
-  
-  /// 결과 후처리 (향후 확장용)
-  AnalysisResult _postprocessResult(final AnalysisResult result) {
-    // 현재는 원본 반환, 향후 결과 정제/검증 등 추가 가능
-    return result;
-  }
+  // 향후 이미지 전처리 및 결과 후처리 메서드들을 여기에 추가할 예정
 } 

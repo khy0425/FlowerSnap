@@ -70,9 +70,9 @@ class AnalysisResult extends HiveObject {
   final List<DetectionResult> detectionResults;
 
   /// 이전 버전 호환성을 위한 boundingBoxes 접근자
-  @deprecated
+  @Deprecated('Use detectionResults instead. Will be removed in v2.0.0')
   List<BoundingBox> get boundingBoxes =>
-      detectionResults.map((detection) => detection.boundingBox).toList();
+      detectionResults.map((final detection) => detection.boundingBox).toList();
 
   AnalysisResult({
     required this.id,

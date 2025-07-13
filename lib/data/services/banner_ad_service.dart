@@ -135,7 +135,7 @@ class _FreeBannerAdWidgetState extends State<FreeBannerAdWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       margin: widget.margin ?? const EdgeInsets.all(8),
       child: Column(

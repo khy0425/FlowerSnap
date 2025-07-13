@@ -70,7 +70,7 @@ class CameraScreen extends ConsumerWidget {
       child: Column(
         children: [
           // 상단 설명
-          const Card(
+          Card(
             child: Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(

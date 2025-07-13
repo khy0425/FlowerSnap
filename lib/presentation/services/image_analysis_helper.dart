@@ -37,11 +37,10 @@ class ImageAnalysisHelper {
   }
 
   /// 이미지 선택 공통 메서드
-  static Future<XFile?> _pickImage(ImageSource source) async {
+  static Future<XFile?> _pickImage(final ImageSource source) async {
     final picker = ImagePicker();
     return await picker.pickImage(
       source: source,
-      preferredCameraDevice: CameraDevice.rear,
       maxWidth: 1024,
       maxHeight: 1024,
       imageQuality: 85,
@@ -74,7 +73,7 @@ class ImageAnalysisHelper {
         await Navigator.push(
           context,
           MaterialPageRoute<void>(
-            builder: (context) => FlowerAnalysisResultScreen(
+            builder: (final context) => FlowerAnalysisResultScreen(
               imageFile: imageFile,
               analysisResult: finalResult,
               isLowConfidence: finalResult.confidence < 0.7,
@@ -96,10 +95,10 @@ class ImageAnalysisHelper {
   }
 
   /// API 에러 다이얼로그
-  static void _showApiErrorDialog(BuildContext context, String error) {
+  static void _showApiErrorDialog(final BuildContext context, final String error) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: const Row(
           children: [
             Icon(Icons.warning, color: Colors.orange),
@@ -144,7 +143,7 @@ class ImageAnalysisHelper {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute<void>(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute<void>(builder: (final context) => const SettingsScreen()),
               );
             },
             child: const Text('설정으로 가기'),
@@ -155,7 +154,7 @@ class ImageAnalysisHelper {
   }
 
   /// API 결과에 바운딩 박스 추가
-  static AnalysisResult _addBoundingBoxesToResult(AnalysisResult result, File imageFile) {
+  static AnalysisResult _addBoundingBoxesToResult(final AnalysisResult result, final File imageFile) {
     final List<DetectionResult> detectionResults = [];
     
     // 식물인 경우에만 바운딩 박스 생성

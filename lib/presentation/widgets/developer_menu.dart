@@ -17,7 +17,7 @@ class DeveloperMenu {
   }) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         title: const Text('개발자 테스트 메뉴'),
         content: Column(
           mainAxisSize: MainAxisSize.min,

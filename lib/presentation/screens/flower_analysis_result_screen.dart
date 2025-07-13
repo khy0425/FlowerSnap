@@ -347,7 +347,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
                       ),
                     ),
                     const SizedBox(height: SeniorConstants.spacingSmall),
-                    ...result.detectionResults.asMap().entries.map((entry) {
+                    ...result.detectionResults.asMap().entries.map((final entry) {
                       final index = entry.key;
                       final box = entry.value;
                       return Padding(
@@ -1164,7 +1164,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 정밀 분석 실행
-  Future<void> _performPreciseAnalysis({required bool useToken}) async {
+  Future<void> _performPreciseAnalysis({required final bool useToken}) async {
     if (!mounted) return;
     
     final localizations = AppLocalizations.of(context);
@@ -1244,7 +1244,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
         
         // 메인 화면으로 돌아가기
         if (mounted && passedContext.mounted) {
-          Navigator.popUntil(passedContext, (route) => route.isFirst);
+          Navigator.popUntil(passedContext, (final route) => route.isFirst);
         }
       }
       
@@ -1256,7 +1256,7 @@ class _FlowerAnalysisResultScreenState extends ConsumerState<FlowerAnalysisResul
   }
   
   /// 스낵바 표시
-  void _showSnackBar(String message, {bool isError = false}) {
+  void _showSnackBar(final String message, {final bool isError = false}) {
     if (!mounted) return;
     
     ScaffoldMessenger.of(context).showSnackBar(

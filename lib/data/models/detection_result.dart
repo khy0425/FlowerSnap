@@ -75,9 +75,9 @@ class DetectionResult extends HiveObject {
   bool get isValid => boundingBox.isValid && confidence >= 0.0 && confidence <= 1.0;
 
   /// 레거시 호환 속성들 (deprecated이지만 기존 코드 호환성을 위해)
-  @deprecated
+  @Deprecated('Use boundingBox.left instead. Will be removed in v2.0.0')
   double get x => boundingBox.left;
-  @deprecated
+  @Deprecated('Use boundingBox.top instead. Will be removed in v2.0.0')
   double get y => boundingBox.top;
 
   @override
