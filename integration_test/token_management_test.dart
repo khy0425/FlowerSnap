@@ -1,6 +1,3 @@
-import 'package:flora_snap/data/services/analysis_token_service.dart';
-import 'package:flora_snap/generated/l10n/app_localizations.dart';
-import 'package:flora_snap/presentation/screens/flora_snap_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,109 +5,136 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'package:flora_snap/data/services/analysis_token_service.dart';
+import 'package:flora_snap/generated/l10n/app_localizations.dart';
+import 'package:flora_snap/presentation/screens/flora_snap_home_screen.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('토큰 관리 시스템 통합 테스트', () {
+  group('Token Management Integration Tests', () {
     late AnalysisTokenService tokenService;
 
     setUpAll(() async {
-      // Hive 초기화 (한 번만)
+      // Hive 초기화
       await Hive.initFlutter();
-    });
-
-    setUp(() {
       tokenService = AnalysisTokenService();
     });
 
     tearDownAll(() async {
-      // 모든 테스트 후 Hive 정리
+      // 테스트 후 정리
       await Hive.close();
     });
 
-    testWidgets('토큰 서비스 초기화 및 기본 동작', (WidgetTester tester) async {
+    setUp(() async {
+      // 각 테스트 전에 토큰 초기화
+      await tokenService.resetTokens();
+    });
+
+    testWidgets('토큰 초기 상태 확인 테스트', (final WidgetTester tester) async {
       await tester.pumpWidget(
-        ProviderScope(
+        const ProviderScope(
           child: MaterialApp(
-            localizationsDelegates: const [
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const FloraSnapHomeScreen(),
+            supportedLocales: [
+              Locale('ko', ''),
+              Locale('en', ''),
+              Locale('ja', ''),
+            ],
+            home: FloraSnapHomeScreen(),
           ),
         ),
       );
-      
-      await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // 토큰 카운트 표시 확인 (올바른 아이콘 사용)
+      await tester.pumpAndSettle();
+
+      // 초기 토큰 개수 확인 (기본값: 10개)
+      final initialTokenCount = await tokenService.getTokenCount();
+      expect(initialTokenCount, equals(10));
+
+      // 토큰 아이콘이 화면에 표시되는지 확인
       expect(find.byIcon(Icons.stars), findsOneWidget);
       
-      // 토큰 서비스 기본 기능 테스트
-      final initialTokens = await tokenService.getTokenCount();
-      expect(initialTokens, isA<int>());
-      expect(initialTokens, greaterThanOrEqualTo(0));
-      
-      print('✅ 토큰 서비스 초기화 테스트 통과');
+      debugPrint('✅ 토큰 초기 상태 확인 테스트 통과 - 초기 토큰: $initialTokenCount개');
     });
 
-    testWidgets('토큰 관리 UI 기본 동작', (WidgetTester tester) async {
+    testWidgets('토큰 사용 테스트', (final WidgetTester tester) async {
       await tester.pumpWidget(
-        ProviderScope(
+        const ProviderScope(
           child: MaterialApp(
-            localizationsDelegates: const [
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const FloraSnapHomeScreen(),
+            supportedLocales: [
+              Locale('ko', ''),
+              Locale('en', ''),
+              Locale('ja', ''),
+            ],
+            home: FloraSnapHomeScreen(),
           ),
         ),
       );
-      
-      await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // 기본 UI 요소들 확인
-      expect(find.text('FloraSnap'), findsOneWidget);
-      expect(find.byIcon(Icons.stars), findsOneWidget); // 토큰 아이콘
-      expect(find.byIcon(Icons.local_florist), findsOneWidget); // 로고
+      await tester.pumpAndSettle();
+
+      // 토큰 사용 전 개수 확인
+      final initialCount = await tokenService.getTokenCount();
       
-      print('✅ 토큰 관리 UI 기본 동작 테스트 통과');
+      // 토큰 1개 사용
+      final success = await tokenService.useToken();
+      expect(success, isTrue);
+      
+      // 토큰 사용 후 개수 확인
+      final afterUseCount = await tokenService.getTokenCount();
+      expect(afterUseCount, equals(initialCount - 1));
+      
+      debugPrint('✅ 토큰 사용 테스트 통과 - 사용 전: $initialCount개, 사용 후: $afterUseCount개');
     });
 
-    testWidgets('토큰 서비스 안정성 테스트', (WidgetTester tester) async {
+    testWidgets('토큰 추가 테스트', (final WidgetTester tester) async {
       await tester.pumpWidget(
-        ProviderScope(
+        const ProviderScope(
           child: MaterialApp(
-            localizationsDelegates: const [
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const FloraSnapHomeScreen(),
+            supportedLocales: [
+              Locale('ko', ''),
+              Locale('en', ''),
+              Locale('ja', ''),
+            ],
+            home: FloraSnapHomeScreen(),
           ),
         ),
       );
-      
-      await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // 여러 번 토큰 카운트 호출해도 안정적인지 확인
-      for (int i = 0; i < 3; i++) {
-        final tokenCount = await tokenService.getTokenCount();
-        expect(tokenCount, isA<int>());
-        expect(tokenCount, greaterThanOrEqualTo(0));
-        
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
+      await tester.pumpAndSettle();
+
+      // 토큰 추가 전 개수 확인
+      final initialCount = await tokenService.getTokenCount();
       
-      print('✅ 토큰 서비스 안정성 테스트 통과');
+      // 토큰 5개 추가
+      await tokenService.addTokens(5);
+      
+      // 잠시 대기
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      
+      // 토큰 추가 후 개수 확인
+      final afterAddCount = await tokenService.getTokenCount();
+      expect(afterAddCount, equals(initialCount + 5));
+      
+      debugPrint('✅ 토큰 추가 테스트 통과 - 추가 전: $initialCount개, 추가 후: $afterAddCount개');
     });
   });
 } 
