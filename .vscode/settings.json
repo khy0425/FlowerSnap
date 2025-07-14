@@ -108,11 +108,26 @@
         "*.mocks.dart": "dart"
     },
     "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "args": ["-NoExit", "-Command", "chcp 65001"]
+        }
+    },
     "terminal.integrated.fontSize": 14,
     "workbench.colorTheme": "Default Dark Modern",
     "workbench.iconTheme": "material-icon-theme",
     "editor.fontFamily": "'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace",
     "editor.fontLigatures": true,
     "editor.fontSize": 14,
-    "editor.lineHeight": 1.5
+    "editor.lineHeight": 1.5,
+    "git.inputValidation": "off",
+    "files.eol": "\n",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "dart.lineLength": 120,
+    "dart.closingLabels": true,
+    "dart.enableSnippets": true,
+    "flutter.showStructuredErrors": true,
+    "dart.previewCommitCharacters": true
 } 
