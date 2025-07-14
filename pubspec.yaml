@@ -79,6 +79,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # === 통합 테스트 ===
+  integration_test:
+    sdk: flutter
+
   # === 코드 생성 ===
   build_runner: ^2.4.12
   json_serializable: ^6.8.0 # JSON 직렬화 생성
@@ -87,8 +91,6 @@ dev_dependencies:
   # === 코드 품질 ===
   flutter_lints: ^5.0.0
 
-
-  
   # === 아이콘 생성 ===
   flutter_launcher_icons: ^0.13.1
 
