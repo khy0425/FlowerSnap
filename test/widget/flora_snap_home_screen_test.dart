@@ -1,11 +1,20 @@
+import 'package:flora_snap/generated/l10n/app_localizations.dart';
 import 'package:flora_snap/presentation/screens/flora_snap_home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Widget createTestWidget() => const ProviderScope(
       child: MaterialApp(
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         home: FloraSnapHomeScreen(),
       ),
     );
@@ -14,6 +23,7 @@ void main() {
     group('Basic Widget Structure', () {
       testWidgets('should build without crashing', (final tester) async {
         await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
         
         // 기본적인 위젯이 빌드되었는지 확인
         expect(find.byType(FloraSnapHomeScreen), findsOneWidget);
