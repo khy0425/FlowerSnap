@@ -75,6 +75,7 @@ class AnalysisResult extends HiveObject {
   List<BoundingBox> get boundingBoxes =>
       detectionResults.map((final detection) => detection.boundingBox).toList();
 
+  /// 일반적인 생성자
   AnalysisResult({
     required this.id,
     required this.name,
@@ -91,6 +92,38 @@ class AnalysisResult extends HiveObject {
     this.additionalInfo,
     this.detectionResults = const <DetectionResult>[],
   });
+
+  /// 테스트/목업용 생성자
+  factory AnalysisResult.createMock({
+    required final String name,
+    required final String scientificName,
+    required final double confidence,
+    required final String apiProvider,
+    required final String category,
+    final String? description,
+    final List<String>? alternativeNames,
+    final String? imageUrl,
+    final DateTime? analyzedAt,
+    final bool isPremiumResult = false,
+    final int? rarity,
+    final Map<String, dynamic>? additionalInfo,
+    final List<DetectionResult>? detectionResults,
+  }) => AnalysisResult(
+      id: 'mock_${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      scientificName: scientificName,
+      confidence: confidence,
+      description: description ?? '$name에 대한 분석 결과입니다.',
+      alternativeNames: alternativeNames ?? <String>[],
+      imageUrl: imageUrl ?? '',
+      analyzedAt: analyzedAt ?? DateTime.now(),
+      apiProvider: apiProvider,
+      isPremiumResult: isPremiumResult,
+      category: category,
+      rarity: rarity ?? _calculateRarity(confidence),
+      additionalInfo: additionalInfo,
+      detectionResults: detectionResults ?? <DetectionResult>[],
+    );
 
   /// JSON 직렬화 팩토리
   factory AnalysisResult.fromJson(final Map<String, dynamic> json) =>
