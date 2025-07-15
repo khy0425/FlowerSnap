@@ -36,6 +36,9 @@ dependencies:
   # === 상태 관리 ===
   flutter_riverpod: ^2.5.1
 
+  # === 의존성 주입 ===
+  get_it: ^7.7.0
+
   # === JSON 직렬화 ===
   json_annotation: ^4.9.0 # JSON 어노테이션
 

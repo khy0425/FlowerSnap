@@ -7,7 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AnalysisTokenService {
   static const String _tokenCountKey = 'analysis_token_count';
   
-  final Logger _logger = Logger();
+  final Logger _logger;
+
+  /// 생성자 (의존성 주입)
+  AnalysisTokenService({final Logger? logger}) : _logger = logger ?? Logger();
 
   /// 현재 토큰 개수 조회
   Future<int> getTokenCount() async {

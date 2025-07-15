@@ -9,10 +9,21 @@ import 'plantnet_service.dart';
 import 'token_manager_service.dart';
 
 class PlantAnalysisService {
-  final Logger _logger = Logger();
-  final TokenManagerService _tokenManager = TokenManagerService();
-  final PlantNetService _plantNetService = PlantNetService();
-  final PlantIdService _plantIdService = PlantIdService();
+  final Logger _logger;
+  final TokenManagerService _tokenManager;
+  final PlantNetService _plantNetService;
+  final PlantIdService _plantIdService;
+
+  /// 생성자 (의존성 주입)
+  PlantAnalysisService({
+    final Logger? logger,
+    final TokenManagerService? tokenManager,
+    final PlantNetService? plantNetService,
+    final PlantIdService? plantIdService,
+  }) : _logger = logger ?? Logger(),
+       _tokenManager = tokenManager ?? TokenManagerService(),
+       _plantNetService = plantNetService ?? PlantNetService(),
+       _plantIdService = plantIdService ?? PlantIdService();
 
   /// 메인 분석 함수 - 토큰 유무에 따라 무료/유료 API 선택
   Future<AnalysisResult> analyzeImage(final File imageFile) async {
@@ -53,27 +64,31 @@ class PlantAnalysisService {
   Future<Map<String, AnalysisResult?>> compareResults(
     final File imageFile,
   ) async {
-    final results = <String, AnalysisResult?>{'free': null, 'premium': null};
+    final results = <String, AnalysisResult?>{};
 
     // 무료 API 결과
     try {
       results['free'] = await _plantNetService.identifyPlant(imageFile);
     } catch (e) {
       _logger.w('무료 API 오류: $e');
+      results['free'] = null;
     }
 
-    // 유료 API 결과 (토큰이 있는 경우만)
-    final plantIdToken = await _tokenManager.getActiveToken('plantid');
-    if (plantIdToken != null && plantIdToken.canUse) {
-      try {
+    // 유료 API 결과
+    try {
+      final plantIdToken = await _tokenManager.getActiveToken('plantid');
+      if (plantIdToken != null && plantIdToken.canUse) {
         results['premium'] = await _plantIdService.identifyPlant(
           imageFile,
           plantIdToken.token,
         );
         await _tokenManager.incrementTokenUsage(plantIdToken);
-      } catch (e) {
-        _logger.w('유료 API 오류: $e');
+      } else {
+        results['premium'] = null;
       }
+    } catch (e) {
+      _logger.w('유료 API 오류: $e');
+      results['premium'] = null;
     }
 
     return results;
