@@ -211,99 +211,97 @@ class AccessibilityThemePanel extends StatefulWidget {
 
 class _AccessibilityThemePanelState extends State<AccessibilityThemePanel> {
   @override
-  Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
-      decoration: SeniorTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 헤더
-          Row(
-            children: [
-              const Icon(
-                Icons.accessibility,
+  Widget build(final BuildContext context) => Container(
+    padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
+    decoration: SeniorTheme.cardDecoration,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 헤더
+        Row(
+          children: [
+            const Icon(
+              Icons.accessibility,
+              color: SeniorTheme.primaryColor,
+              size: SeniorConstants.iconSizeLarge,
+            ),
+            const SizedBox(width: SeniorConstants.spacing),
+            Text(
+              "접근성 설정",
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: SeniorTheme.primaryColor,
-                size: SeniorConstants.iconSizeLarge,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(width: SeniorConstants.spacing),
+            ),
+          ],
+        ),
+        
+        const SizedBox(height: SeniorConstants.spacingLarge),
+        
+        // 다크모드 토글
+        _buildSettingItem(
+          icon: Icons.dark_mode,
+          title: "어두운 테마",
+          subtitle: "눈의 피로를 줄여줍니다",
+          child: ThemeToggle(
+            isDarkMode: widget.isDarkMode,
+            onToggle: widget.onDarkModeToggle,
+            showLabel: false,
+          ),
+        ),
+        
+        const SizedBox(height: SeniorConstants.spacingLarge),
+        
+        // 폰트 크기 조절
+        _buildSettingItem(
+          icon: Icons.text_fields,
+          title: "글자 크기",
+          subtitle: "읽기 편한 크기로 조절하세요",
+          child: Column(
+            children: [
+              Slider(
+                value: widget.fontSize,
+                min: 12.0,
+                max: 24.0,
+                divisions: 6,
+                activeColor: SeniorTheme.primaryColor,
+                inactiveColor: SeniorTheme.primaryColor.withValues(alpha: 0.3),
+                onChanged: (final double value) {
+                  HapticFeedback.selectionClick();
+                  widget.onFontSizeChange(value);
+                },
+              ),
               Text(
-                "접근성 설정",
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: SeniorTheme.primaryColor,
+                "${widget.fontSize.round()}px",
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontSize: widget.fontSize,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          
-          const SizedBox(height: SeniorConstants.spacingLarge),
-          
-          // 다크모드 토글
-          _buildSettingItem(
-            icon: Icons.dark_mode,
-            title: "어두운 테마",
-            subtitle: "눈의 피로를 줄여줍니다",
-            child: ThemeToggle(
-              isDarkMode: widget.isDarkMode,
-              onToggle: widget.onDarkModeToggle,
-              showLabel: false,
-            ),
+        ),
+        
+        const SizedBox(height: SeniorConstants.spacingLarge),
+        
+        // 고대비 모드
+        _buildSettingItem(
+          icon: Icons.contrast,
+          title: "고대비 모드",
+          subtitle: "색상 대비를 높여 선명하게 표시",
+          child: Switch(
+            value: widget.highContrast,
+            onChanged: (final bool value) {
+              HapticFeedback.lightImpact();
+              widget.onHighContrastToggle(value);
+            },
+            activeColor: SeniorTheme.primaryColor,
+            activeTrackColor: SeniorTheme.primaryColor.withValues(alpha: 0.5),
           ),
-          
-          const SizedBox(height: SeniorConstants.spacingLarge),
-          
-          // 폰트 크기 조절
-          _buildSettingItem(
-            icon: Icons.text_fields,
-            title: "글자 크기",
-            subtitle: "읽기 편한 크기로 조절하세요",
-            child: Column(
-              children: [
-                Slider(
-                  value: widget.fontSize,
-                  min: 12.0,
-                  max: 24.0,
-                  divisions: 6,
-                  activeColor: SeniorTheme.primaryColor,
-                  inactiveColor: SeniorTheme.primaryColor.withValues(alpha: 0.3),
-                  onChanged: (final double value) {
-                    HapticFeedback.selectionClick();
-                    widget.onFontSizeChange(value);
-                  },
-                ),
-                Text(
-                  "${widget.fontSize.round()}px",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: widget.fontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          const SizedBox(height: SeniorConstants.spacingLarge),
-          
-          // 고대비 모드
-          _buildSettingItem(
-            icon: Icons.contrast,
-            title: "고대비 모드",
-            subtitle: "색상 대비를 높여 선명하게 표시",
-            child: Switch(
-              value: widget.highContrast,
-              onChanged: (final bool value) {
-                HapticFeedback.lightImpact();
-                widget.onHighContrastToggle(value);
-              },
-              activeColor: SeniorTheme.primaryColor,
-              activeTrackColor: SeniorTheme.primaryColor.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 
   Widget _buildSettingItem({
     required final IconData icon,

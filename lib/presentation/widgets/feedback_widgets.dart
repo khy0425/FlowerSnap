@@ -156,103 +156,101 @@ class _FeedbackWidgetState extends State<FeedbackWidget>
   }
 
   @override
-  Widget build(final BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([_slideAnimation, _fadeAnimation, _iconAnimation]),
-      builder: (final BuildContext context, final Widget? child) {
-        return Transform.translate(
-          offset: Offset(0, _slideAnimation.value),
-          child: Opacity(
-            opacity: _fadeAnimation.value,
-            child: Container(
-              margin: const EdgeInsets.all(SeniorConstants.spacing),
-              padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    _backgroundColor,
-                    _backgroundColor.withValues(alpha: 0.8),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
-                boxShadow: [
-                  BoxShadow(
-                    color: _backgroundColor.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // 아이콘
-                  Transform.scale(
-                    scale: _iconAnimation.value,
-                    child: Container(
-                      padding: const EdgeInsets.all(SeniorConstants.spacingSmall),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        _icon,
-                        color: Colors.white,
-                        size: SeniorConstants.iconSizeLarge,
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(width: SeniorConstants.spacing),
-                  
-                  // 텍스트 영역
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.title ?? _defaultTitle,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        if (widget.message.isNotEmpty) ...[
-                          const SizedBox(height: SeniorConstants.spacingXSmall),
-                          Text(
-                            widget.message,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.9),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  
-                  // 액션 버튼
-                  if (widget.onAction != null && widget.actionLabel != null) ...[
-                    const SizedBox(width: SeniorConstants.spacing),
-                    ElevatedButton(
-                      onPressed: widget.onAction,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white.withValues(alpha: 0.2),
-                        foregroundColor: Colors.white,
-                        side: BorderSide(color: Colors.white.withValues(alpha: 0.5)),
-                      ),
-                      child: Text(widget.actionLabel!),
-                    ),
-                  ],
-                ],
-              ),
+  Widget build(final BuildContext context) => AnimatedBuilder(
+    animation: Listenable.merge([_slideAnimation, _fadeAnimation, _iconAnimation]),
+    builder: (final BuildContext context, final Widget? child) => Transform.translate(
+      offset: Offset(0, _slideAnimation.value),
+      child: Opacity(
+        opacity: _fadeAnimation.value,
+        child: Container(
+          margin: const EdgeInsets.all(SeniorConstants.spacing),
+          padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                _backgroundColor,
+                _backgroundColor.withValues(alpha: 0.8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
+            boxShadow: [
+              BoxShadow(
+                color: _backgroundColor.withValues(alpha: 0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+          child: Row(
+            children: [
+              // 아이콘
+              Transform.scale(
+                scale: _iconAnimation.value,
+                child: Container(
+                  padding: const EdgeInsets.all(SeniorConstants.spacingSmall),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    _icon,
+                    color: Colors.white,
+                    size: SeniorConstants.iconSizeLarge,
+                  ),
+                ),
+              ),
+              
+              const SizedBox(width: SeniorConstants.spacing),
+              
+              // 텍스트 영역
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 제목
+                    Text(
+                      widget.title ?? _defaultTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    
+                    if (widget.message.isNotEmpty) ...[
+                      const SizedBox(height: SeniorConstants.spacingXSmall),
+                      Text(
+                        widget.message,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              
+              // 액션 버튼
+              if (widget.onAction != null && widget.actionLabel != null) ...[
+                const SizedBox(width: SeniorConstants.spacing),
+                ElevatedButton(
+                  onPressed: widget.onAction,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.5)),
+                  ),
+                  child: Text(widget.actionLabel!),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 /// 🎯 토스트 메시지
@@ -430,61 +428,37 @@ class ResultCard extends StatelessWidget {
   }
 
   @override
-  Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
-      decoration: BoxDecoration(
-        color: _backgroundColor,
-        borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
-        border: Border.all(color: _borderColor, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                _icon,
-                color: _borderColor,
-                size: SeniorConstants.iconSizeLarge,
-              ),
-              const SizedBox(width: SeniorConstants.spacing),
-              Expanded(
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: _borderColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
+  Widget build(final BuildContext context) => Container(
+    padding: const EdgeInsets.all(SeniorConstants.spacingLarge),
+    decoration: BoxDecoration(
+      color: _backgroundColor,
+      borderRadius: BorderRadius.circular(SeniorConstants.borderRadiusLarge),
+      border: Border.all(color: _borderColor, width: 2),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.1),
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          _icon,
+          color: _borderColor,
+          size: SeniorConstants.iconSizeMedium,
+        ),
+        const SizedBox(width: SeniorConstants.spacingSmall),
+        Text(
+          message,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: SeniorTheme.textPrimaryColor,
+            fontWeight: FontWeight.w500,
           ),
-          
-          const SizedBox(height: SeniorConstants.spacing),
-          
-          Text(
-            message,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: SeniorTheme.textPrimaryColor,
-            ),
-          ),
-          
-          if (child != null) ...[
-            const SizedBox(height: SeniorConstants.spacing),
-            child!,
-          ],
-          
-          if (actions != null && actions!.isNotEmpty) ...[
-            const SizedBox(height: SeniorConstants.spacingLarge),
-            Wrap(
-              spacing: SeniorConstants.spacingSmall,
-              runSpacing: SeniorConstants.spacingSmall,
-              children: actions!,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 } 
