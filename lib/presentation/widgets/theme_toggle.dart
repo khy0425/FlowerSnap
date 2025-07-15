@@ -101,11 +101,11 @@ class _ThemeToggleState extends State<ThemeToggle>
                 : SeniorTheme.borderColor,
             width: 2,
           ),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: SeniorTheme.cardElevationColor,
               blurRadius: 8,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -127,8 +127,6 @@ class _ThemeToggleState extends State<ThemeToggle>
                           SeniorTheme.tokenColor,
                           SeniorTheme.secondaryColor,
                         ],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -223,7 +221,7 @@ class _AccessibilityThemePanelState extends State<AccessibilityThemePanel> {
           // 헤더
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.accessibility,
                 color: SeniorTheme.primaryColor,
                 size: SeniorConstants.iconSizeLarge,

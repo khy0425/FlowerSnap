@@ -271,7 +271,7 @@ class CustomToast {
     late OverlayEntry entry;
     
     entry = OverlayEntry(
-      builder: (context) => Positioned(
+      builder: (final BuildContext context) => Positioned(
         top: MediaQuery.of(context).padding.top + 20,
         left: 0,
         right: 0,

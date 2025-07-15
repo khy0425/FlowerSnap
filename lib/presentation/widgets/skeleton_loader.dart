@@ -143,7 +143,7 @@ class SkeletonCard extends StatelessWidget {
         ],
         
         // 제목
-        const SkeletonText(height: 20, lines: 1),
+        const SkeletonText(height: 20),
         const SizedBox(height: SeniorConstants.spacingSmall),
         
         // 설명
@@ -232,7 +232,7 @@ class MainCameraSectionSkeleton extends StatelessWidget {
         const SizedBox(height: SeniorConstants.spacing),
         
         // 설명
-        const SkeletonText(lines: 2, height: 16),
+        const SkeletonText(lines: 2),
         const SizedBox(height: SeniorConstants.spacingLarge),
         
         // 카메라 버튼들
