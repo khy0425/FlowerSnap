@@ -45,81 +45,46 @@ class EnhancedPlantAnalysisService {
     }
   }
   
-  /// 병렬 분석 수행
+  /// 실제 분석 결과를 반환하는 메서드 (mockup)
   Future<List<AnalysisResult?>> _performParallelAnalysis(final Uint8List imageBytes) async {
-    return await Future.wait([
-      _analyzePlantNet(imageBytes),
-      _analyzePlantId(imageBytes),
-      _analyzeGoogleVision(imageBytes),
-    ]);
-  }
-  
-  /// PlantNet API 분석
-  Future<AnalysisResult?> _analyzePlantNet(final Uint8List imageBytes) async {
-    try {
-      _logger.d('PlantNet API 호출 중...');
-      
-      // 실제 PlantNet API 호출 로직 구현 예정
-      await Future.delayed(const Duration(milliseconds: 800));
-      
-      // 임시 결과 반환
-      return AnalysisResult.createMock(
-        name: 'PlantNet 분석 결과',
-        scientificName: 'Plantus networkus',
-        confidence: 0.75,
+    // 실제 환경에서는 다중 API 호출
+    
+    // PlantNet API 호출 (mockup)
+    final plantnetResult = await Future<AnalysisResult?>.delayed(
+      const Duration(seconds: 1),
+      () => AnalysisResult.createMock(
+        name: 'PlantNet Mock',
+        scientificName: 'Mockus plantneticus',
+        confidence: 0.85,
         apiProvider: 'plantnet',
         category: 'plant',
-      );
-      
-    } catch (e) {
-      _logger.w('PlantNet API 오류: $e');
-      return null;
-    }
-  }
-  
-  /// Plant.id API 분석
-  Future<AnalysisResult?> _analyzePlantId(final Uint8List imageBytes) async {
-    try {
-      _logger.d('Plant.id API 호출 중...');
-      
-      // 실제 Plant.id API 호출 로직 구현 예정
-      await Future.delayed(const Duration(milliseconds: 600));
-      
-      // 임시 결과 반환
-      return AnalysisResult.createMock(
-        name: 'Plant.id 분석 결과',
-        scientificName: 'Plantus identicus',
-        confidence: 0.85,
+      ),
+    );
+    
+    // Plant.id API 호출 (mockup)
+    final plantIdResult = await Future<AnalysisResult?>.delayed(
+      const Duration(seconds: 2),
+      () => AnalysisResult.createMock(
+        name: 'Plant.ID Mock',
+        scientificName: 'Mockus plantidicus',
+        confidence: 0.92,
         apiProvider: 'plantid',
         category: 'plant',
-      );
-      
-    } catch (e) {
-      _logger.w('Plant.id API 오류: $e');
-      return null;
-    }
-  }
-  
-  /// Google Vision API 분석
-  Future<AnalysisResult?> _analyzeGoogleVision(final Uint8List imageBytes) async {
-    try {
-      _logger.d('Google Vision API 호출 중...');
-      
-      // 실제 Google Vision API 호출 로직 구현 예정
-      await Future.delayed(const Duration(milliseconds: 1000));
-      
-      // 임시 결과 반환
-      return AnalysisResult.createMock(
-        name: 'Google Vision 분석 결과',
-        scientificName: 'Plantus googleus',
-        confidence: 0.70,
-        apiProvider: 'google_vision',
+      ),
+    );
+    
+    // iNaturalist API 호출 (mockup)
+    final iNaturalistResult = await Future<AnalysisResult?>.delayed(
+      const Duration(seconds: 1),
+      () => AnalysisResult.createMock(
+        name: 'iNaturalist Mock',
+        scientificName: 'Mockus inaturalisticus',
+        confidence: 0.78,
+        apiProvider: 'inaturalist',
         category: 'plant',
-      );
-      
-    } catch (e) {
-      _logger.w('Google Vision API 오류: $e');
-      return null;
-    }
+      ),
+    );
+    
+    return [plantnetResult, plantIdResult, iNaturalistResult];
   }
 } 
