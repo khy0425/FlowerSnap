@@ -139,11 +139,11 @@ class _FloraSnapHomeScreenState extends ConsumerState<FloraSnapHomeScreen>
                             HomeScreenWidgets.buildMainCameraSection(
                               context,
                               isLoading: _isLoading,
-                              onTakePhoto: () => ImageAnalysisHelper.takePictureAndAnalyze(
+                              onTakePhoto: () => ImageAnalysisHelper.instance.takePictureAndAnalyze(
                                 context,
                                 setLoading: _setLoading,
                               ),
-                              onSelectFromGallery: () => ImageAnalysisHelper.pickFromGalleryAndAnalyze(
+                              onSelectFromGallery: () => ImageAnalysisHelper.instance.pickFromGalleryAndAnalyze(
                                 context,
                                 setLoading: _setLoading,
                               ),
